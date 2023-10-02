@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + 'Поиск заявлений в ЕРЗ ТФОМС'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+		<ul class="nav nav-tabs">
+			<li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Поиск заявлений в ЕРЗ ТФОМС</a>
+			</li>
+			<li class="nav-item"><a class="nav-link disabled" href="#">Ввод адреса из ГАР</a></li>
+		</ul>
+		<br />
+		<form th:method="POST" th:action="@{/appl}" id="applForm"
+			onsubmit="document.getElementById('spinner').style.display = 'inline-block';">
+			<div class="row gy-1">
+				<div class="col-sm-4">Дата регистрации(диапазон)*</div>
+				<div class="col-sm-4"><input
+						th:classappend="${#fields.hasErrors('formParams.dtReg1')} ? 'is-invalid' : ''" type="date"
+						th:field="*{formParams.dtReg1}" id="dtReg1" class="form-control form-control-sm" /></div>
+				<div class="col-sm-4"><input
+						th:classappend="${#fields.hasErrors('formParams.dtReg2')} ? 'is-invalid' : ''" type="date"
+						th:field="*{formParams.dtReg2}" id="dtReg2" class="form-control form-control-sm" /></div>
+				<div class="col-sm-4">Инспектор/Подразделение</div>
+				<div class="col-sm-4"><select th:field="*{formParams.cdInsp}" class="form-select form-select-sm"
+						th:onchange="checkInspectorValue(this.value)">
+						<option value=""></option>
+						<option th:each="inspector : ${inspectors}" th:value="${inspector.cdInsp}"
+							th:text="${inspector.fioInsp} + ' (' + ${inspector.cdFsmo} + ' филиал)'"
+							th:selected="${formParams.cdInsp}"></option>
+					</select></div>
+				<div class="col-sm-4"><select th:field="*{formParams.cdFsmo}" class="form-select form-select-sm"
+						th:onchange="checkBranchValue(this.value)">
+						<option value=""></option>
+						<option th:each="branch : ${branches}" th:value="${branch.cdFsmo}"
+							th:text="${branch.name} + ' (' + ${branch.cdFsmo} + ' филиал)'"
+							th:selected="${formParams.cdFsmo}"></option>
+					</select></div>
+				<div class="col-sm-4">Документ, удостоверяющий личность
+				</div>
+				<div class="col-sm-4"><input type="text" th:field="*{formParams.serDoc}" id="serDoc"
+						class="form-control form-control-sm" placeholder="серия" /></div>
+				<div class="col-sm-4"><input type="text" th:field="*{formParams.numDoc}" id="numDoc"
+						class="form-control form-control-sm" placeholder="номер" /></div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-sm"><input type="submit" value="Поиск" class="btn btn-sm btn-primary" />
+					<input type="button" value="Очистить" onclick="location.href='/appl?clear'"
+						class="btn btn-sm btn-secondary" />
+					<input type="button" value="В Excel" th:onclick="|downloadExcel()|"
+						class="btn btn-sm btn-secondary" />
+				</div>
+				<div class="col-sm-8">
+					<div style="display: none;" id="spinner">
+						<div class="spinner-border spinner-border-sm" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+						<small>загрузка...</small>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div th:if="${dataPage != null && dataPage.content.size > 0}">
+				<table class="table table-sm table-striped table-hover">
+					<thead class="table-dark">
+						<tr class="small">
+							<th>Фамилия</th>
+							<th>Имя</th>
+							<th>Отчество</th>
+							<th>Дата рождения</th>
+							<th>Дата подачи</th>
+							<th>Код филиала</th>
+							<th>Инспектор</th>
+							<th>Адрес по ГАР</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="appl, iStat : ${dataPage.content}" class='clickable-row small'
+							th:onclick="|goToAddress(${appl.id_appl})|" style="cursor: pointer;">
+							<td align="left" th:text="${appl.fam}" />
+							<td align="left" th:text="${appl.im}" />
+							<td align="left" th:text="${appl.ot}" />
+							<td align="left" th:text="${#temporals.format(appl.dr, 'dd.MM.yyyy')}" />
+							<td align="left" th:text="${#temporals.format(appl.dtAppl, 'dd.MM.yyyy')}" />
+							<td align="left" th:text="${appl.cdFsmo}" />
+							<td align="left" th:text="${appl.inspector != null ? appl.inspector.fioInsp : ''}" />
+							<td align="center"><span th:if="${appl.garAppl != null}">&check;</span></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav aria-label="Pagination" th:if="${dataPage.totalPages gt 0}">
+					<ul class="pagination pagination-sm justify-content-center font-weight-medium">
+						<li class="page-item" th:classappend="${dataPage.number eq 0} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number eq 0} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number lt 2 ? 1 : dataPage.number})|">
+								<p>&#60;&#60;
+								<p>
+							</button>
+						</li>
+						<li class="page-item" th:classappend="${i eq dataPage.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence(dataPage.totalPages > dataPage.number + 10 ? dataPage.number + 1 : dataPage.totalPages - 10 > 0 ? dataPage.totalPages - 10 : 1, dataPage.totalPages > 10 + dataPage.number ? dataPage.number + 10 : dataPage.totalPages, 1)}">
+							<a class="page-link" href="#" th:onclick="|goToPage(${i})|" th:text="${i}"><span
+									class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item disabled" th:if="${dataPage.number + 10 < dataPage.totalPages}"><a
+								class="page-link" href="#"> ... </a></li>
+						<li class="page-item"
+							th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number + 2})|">
+								<p>&#62;&#62;
+								<p>
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<input type="hidden" id="page" name="page" /> <input type="hidden" id="idAppl" name="idAppl" />
+		</form>
+	</div>
+	<footer class="text-center text-lg-start" th:fragment="footer" th:insert="copyright">
+	</footer>
+	<script th:inline="javascript">
+		document.getElementById("applForm").onkeypress = function (e) {
+			var key = e.charCode || e.keyCode || 0;
+			if (key == 13) {
+				e.preventDefault();
+			}
+		}
+		function goToPage(page) {
+			document.getElementById('spinner').style.display = 'inline-block';
+			document.getElementById("applForm").page.value = page;
+			document.getElementById("applForm").submit();
+		}
+		function goToAddress(idAppl) {
+			form = document.getElementById("applForm");
+			form.idAppl.value = idAppl;
+			form.action = "/appl/addr";
+			form.target = "_blank";
+			form.submit();
+			form.action = "/appl";
+			form.target = "_self";
+		}
+		function downloadExcel() {
+			form = document.getElementById("applForm");
+			if (form.dtReg1.value != '' && form.dtReg2.value != '')
+				form.action = "/appl/report";
+			form.submit();
+			form.action = "/appl";
+			timerId = setInterval(function () {
+				getReportStatus();
+			}, 1000);
+			document.getElementById('spinner').style.display = 'inline-block';
+		}
+		function getReportStatus() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function () {
+				if (xhttp.responseText == 'done') {
+					clearTimeout(timerId);
+					document.getElementById('spinner').style.display = 'none';
+				}
+			}
+			xhttp.open("GET", window.location.href + "/report/status");
+			xhttp.send();
+		}
+		function checkInspectorValue(value) {
+			var cdFsmo = document.getElementById("cdFsmo");
+			var cdInsp = document.getElementById("cdInsp");
+			if (value != "") {
+				cdFsmo.setAttribute("disabled", "");
+				cdFsmo.value = "";
+			} else {
+				cdFsmo.removeAttribute("disabled");
+			}
+		}
+		function checkBranchValue(value) {
+			var cdFsmo = document.getElementById("cdFsmo");
+			var cdInsp = document.getElementById("cdInsp");
+			if (value != "") {
+				cdInsp.setAttribute("disabled", "");
+				cdInsp.value = "";
+			} else {
+				cdInsp.removeAttribute("disabled");
+			}
+		}
+	</script>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>
