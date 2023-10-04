@@ -8,17 +8,17 @@
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent" sec:authorize="isAuthenticated()">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item">
+					<li class="nav-item" sec:authorize="hasAuthority('smo')">
 						<a class="nav-link"
-							th:classappend="${#httpServletRequest.servletPath} == '/appl' ? 'active' : ''"
+							th:classappend="${#httpServletRequest.servletPath.contains('/appl')} ? 'active' : ''"
 							href="/appl">Поиск заявлений</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" sec:authorize="hasAnyAuthority('smo','tfoms')">
 						<a class="nav-link"
-							th:classappend="${#httpServletRequest.servletPath} == '/ferzl' ? 'active' : ''"
-							href="/smo">Поиск информации о полисах</a>
+							th:classappend="${#httpServletRequest.servletPath.contains('/policy')} ? 'active' : ''"
+							href="/policy">Поиск информации о полисах</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" sec:authorize="hasAnyAuthority('smo','tfoms')">
 						<a class="nav-link"
 							th:classappend="${#httpServletRequest.servletPath} == '/ancessor' ? 'active' : ''"
 							href="/ancessor">Поиск ОИП актуальной персоны-продолжателя</a></li>

@@ -109,7 +109,7 @@ public class ApplController {
 	@PostMapping("/appl/addr")
 	public String address(Model model, @RequestParam("idAppl") Long applId, @ModelAttribute("gar") Gar gar,
 			@ModelAttribute("selAddress") SelectedAddress selAddress, @ModelAttribute("filter") FilterWord filter,
-			@RequestParam("save") Optional<Integer> save) {
+			@RequestParam("save") Optional<String> save) {
 
 		Appl appl = applService.findById(applId).orElse(null);
 		if (appl == null) {

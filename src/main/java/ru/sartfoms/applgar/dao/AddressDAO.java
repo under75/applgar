@@ -94,7 +94,7 @@ public class AddressDAO {
 
 	public Collection<House> level4(Integer parentid) {
 		String sql = "SELECT hous.OBJECTID, hous.OBJECTGUID, hous.HOUSENUM, hous.ADDNUM1, hous.ADDNUM2, hous.ID FROM fiasowner.as_houses hous"
-				+ " where hous.OBJECTID in (select h.OBJECTID from fiasowner.as_adm_hierarchy h where h.PARENTOBJID = :parentid) order by hous.HOUSENUM";
+				+ " where hous.ISACTUAL=1 and hous.ISACTIVE=1 and hous.OBJECTID in (select h.OBJECTID from fiasowner.as_adm_hierarchy h where h.PARENTOBJID = :parentid) order by hous.HOUSENUM";
 
 		MapSqlParameterSource namedParams = new MapSqlParameterSource();
 		namedParams.addValue("parentid", parentid);
@@ -104,7 +104,7 @@ public class AddressDAO {
 
 	public Collection<House> level4(Integer parentid, String filter) {
 		String sql = "SELECT hous.OBJECTID, hous.OBJECTGUID, hous.HOUSENUM, hous.ADDNUM1, hous.ADDNUM2, hous.ID FROM fiasowner.as_houses hous"
-				+ " where lower(hous.HOUSENUM) like lower(:filter) and hous.OBJECTID in (select h.OBJECTID from fiasowner.as_adm_hierarchy h where h.PARENTOBJID = :parentid) order by hous.HOUSENUM";
+				+ " where hous.ISACTUAL=1 and hous.ISACTIVE=1 and lower(hous.HOUSENUM) like lower(:filter) and hous.OBJECTID in (select h.OBJECTID from fiasowner.as_adm_hierarchy h where h.PARENTOBJID = :parentid) order by hous.HOUSENUM";
 
 		MapSqlParameterSource namedParams = new MapSqlParameterSource();
 		namedParams.addValue("filter", "%" + filter + "%");
@@ -155,7 +155,7 @@ public class AddressDAO {
 				"select a.ID from fiasowner.as_addr_obj a inner join fiasowner.as_adm_hierarchy h on a.objectid = h.parentobjid where a.isactual = 1 and h.objectid in (select ad.objectid from fiasowner.as_addr_obj ad where ad.id = :childId)",
 				namedParams, Integer.class).stream().findAny().orElse(findAddressById(childId).getId());
 	}
-	
+
 	public Integer findIdLev1ByChildId(Integer childId) {
 		MapSqlParameterSource namedParams = new MapSqlParameterSource();
 		namedParams.addValue("childId", childId);
@@ -270,7 +270,7 @@ public class AddressDAO {
 
 		return jdbcTemplate.queryForList(sql, namedParams, String.class).stream().findAny().orElse(null);
 	}
-	
+
 	public void updateForOkatoByReg(Long id_appl, String rguidreg, String rguidpr) {
 		String selectForReg = "with QQ as (select aao.objectguid,aaop.VALUE_ from FIASOWNER.AS_ADDR_OBJ_PARAMS aaop "
 				+ "join FIASOWNER.AS_ADDR_OBJ aao ON aaop.OBJECTID = aao.OBJECTID "
@@ -282,19 +282,21 @@ public class AddressDAO {
 				+ "where aao.ISACTIVE = 1 AND aao.ISACTUAL = 1 and aaop.TYPEID_ = 6 and TO_DATE(aaop.ENDDATE, 'yyyy-MM-dd') > CURRENT_DATE) "
 				+ "select distinct QQ.value_ from QQ "
 				+ "join OMCOWNER.ADDRESS_GAR ag on QQ.OBJECTGUID = ag.RGUIDPR where ag.RGUIDPR=:rguidpr";
-		
-		String updateForReg = "update OMCOWNER.address_gar set okatoreg = (" +selectForReg + ") where  id_appl = :id_appl";
-		String updateForPr = "update OMCOWNER.address_gar set okatopr = (" +selectForPr + ") where  id_appl = :id_appl";
-		
+
+		String updateForReg = "update OMCOWNER.address_gar set okatoreg = (" + selectForReg
+				+ ") where  id_appl = :id_appl";
+		String updateForPr = "update OMCOWNER.address_gar set okatopr = (" + selectForPr
+				+ ") where  id_appl = :id_appl";
+
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id_appl", id_appl);
 		params.addValue("rguidreg", rguidreg);
 		params.addValue("rguidpr", rguidpr);
-		
+
 		jdbcTemplate.update(updateForReg, params);
 		jdbcTemplate.update(updateForPr, params);
 	}
-	
+
 	public void updateForOkatoByStreet(Long id_appl, String aoguidreg, String aoguidpr) {
 		String selectForReg = "with QQ as (select aao.objectguid,aaop.VALUE_ from FIASOWNER.AS_ADDR_OBJ_PARAMS aaop "
 				+ "join FIASOWNER.AS_ADDR_OBJ aao ON aaop.OBJECTID = aao.OBJECTID "
@@ -306,18 +308,19 @@ public class AddressDAO {
 				+ "where aao.ISACTIVE = 1 AND aao.ISACTUAL = 1 and aaop.TYPEID_ = 6 and TO_DATE(aaop.ENDDATE, 'yyyy-MM-dd') > CURRENT_DATE) "
 				+ "select distinct QQ.value_ from QQ "
 				+ "join OMCOWNER.ADDRESS_GAR ag on QQ.OBJECTGUID = ag.AOGUIDPR where ag.AOGUIDPR=:aoguidpr";
-		
-		String updateForReg = "update OMCOWNER.address_gar set okatoreg = (" + selectForReg + ") where  id_appl = :id_appl";
-		String updateForPr = "update OMCOWNER.address_gar set okatopr = (" + selectForPr + ") where  id_appl = :id_appl";
-		
+
+		String updateForReg = "update OMCOWNER.address_gar set okatoreg = (" + selectForReg
+				+ ") where  id_appl = :id_appl";
+		String updateForPr = "update OMCOWNER.address_gar set okatopr = (" + selectForPr
+				+ ") where  id_appl = :id_appl";
+
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id_appl", id_appl);
 		params.addValue("aoguidreg", aoguidreg);
 		params.addValue("aoguidpr", aoguidpr);
-		
+
 		jdbcTemplate.update(updateForReg, params);
 		jdbcTemplate.update(updateForPr, params);
 	}
 
 }
-

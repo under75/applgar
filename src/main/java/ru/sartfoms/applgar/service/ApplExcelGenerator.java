@@ -11,14 +11,13 @@ import ru.sartfoms.applgar.exception.ExcelGeneratorException;
 import ru.sartfoms.applgar.model.ApplRowData;
 import ru.sartfoms.applgar.util.ExcelGenerator;
 
-
 public class ApplExcelGenerator extends ExcelGenerator {
 	private Collection<ApplRowData> data;
-	
+
 	public ApplExcelGenerator(Collection<ApplRowData> rows) throws ExcelGeneratorException {
 		super(rows);
 		data = rows;
-		
+
 		createHeader();
 		createBody();
 	}
@@ -45,14 +44,14 @@ public class ApplExcelGenerator extends ExcelGenerator {
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getFsmoCode());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentLeft), rowData.getFsmoName());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter),
-					SIMPLE_DATE_FORMAT.format(rowData.getApplDate()));
+					rowData.getApplDate() != null ? rowData.getApplDate().format(DATE_FORMATTER) : "");
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getApplType());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getApplCause());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentLeft), rowData.getPersonLastName());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentLeft), rowData.getPersonFirstName());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentLeft), rowData.getPersonPatronymic());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter),
-					SIMPLE_DATE_FORMAT.format(rowData.getPersonBirsday()));
+					rowData.getPersonBirsday() != null ? rowData.getPersonBirsday().format(DATE_FORMATTER) : "");
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getPersonGender());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getPersonHomePhone());
 			setCellValue(createCellAndFormat(row, column++, bodyStyleAlignmentCenter), rowData.getPersonWorkPhone());
@@ -97,4 +96,3 @@ public class ApplExcelGenerator extends ExcelGenerator {
 
 	}
 }
-

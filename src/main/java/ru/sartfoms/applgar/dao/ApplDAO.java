@@ -86,13 +86,13 @@ public class ApplDAO {
 						data.setSmoCode(String.valueOf(rs.getInt(2)));
 						data.setFsmoCode(String.valueOf(rs.getInt(3)));
 						data.setFsmoName(rs.getString(4));
-						data.setApplDate(rs.getDate(5));
+						data.setApplDate(rs.getDate(5).toLocalDate());
 						data.setApplType(rs.getString(6));
 						data.setApplCause(rs.getString(7));
 						data.setPersonLastName(rs.getString(8));
 						data.setPersonFirstName(rs.getString(9));
 						data.setPersonPatronymic(rs.getString(10));
-						data.setPersonBirsday(rs.getDate(11));
+						data.setPersonBirsday(rs.getDate(11).toLocalDate());
 						data.setPersonGender(rs.getString(12));
 						data.setPersonHomePhone(rs.getString(13));
 						data.setPersonWorkPhone(rs.getString(14));

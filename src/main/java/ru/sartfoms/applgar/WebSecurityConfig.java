@@ -46,9 +46,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		http.formLogin().loginPage("/login").usernameParameter("name").passwordParameter("passwd")
 				.successHandler(myAuthenticationSuccessHandler());
 		http.authorizeRequests().antMatchers("/resources/**", "/static/**", "/webjars/**", "/help/**").permitAll()
-				.antMatchers("/**").hasAnyAuthority("smo")
-				.anyRequest().authenticated().and().formLogin().permitAll().and().logout().permitAll().and()
-				.exceptionHandling().accessDeniedPage("/403");
+				.antMatchers("/appl/**").hasAuthority("smo").antMatchers("/policy/**", "/ancessor/**")
+				.hasAnyAuthority("smo", "tfoms").anyRequest().authenticated().and().formLogin().permitAll().and()
+				.logout().permitAll().and().exceptionHandling().accessDeniedPage("/403");
 		return http.build();
 	}
 
@@ -56,10 +56,10 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
 		return new MySimpleUrlAuthenticationSuccessHandler();
 	}
-	
+
 	@Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginPageInterceptor());
-    }
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LoginPageInterceptor());
+	}
 
 }

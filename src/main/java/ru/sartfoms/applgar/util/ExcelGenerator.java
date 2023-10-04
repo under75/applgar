@@ -3,7 +3,7 @@ package ru.sartfoms.applgar.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -14,11 +14,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import ru.sartfoms.applgar.exception.ExcelGeneratorException;
 
-
 public abstract class ExcelGenerator {
 	protected XSSFWorkbook template;
 	protected XSSFSheet sheet;
-	public final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	protected DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	public ExcelGenerator(Collection<?> rows) throws ExcelGeneratorException {
 		if (rows.size() > 65535)
@@ -54,4 +53,3 @@ public abstract class ExcelGenerator {
 	}
 
 }
-

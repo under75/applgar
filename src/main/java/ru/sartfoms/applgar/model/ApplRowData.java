@@ -1,6 +1,6 @@
 package ru.sartfoms.applgar.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.thymeleaf.util.StringUtils;
 
@@ -13,7 +13,7 @@ public class ApplRowData {
 
 	private String fsmoName;
 
-	private Date applDate;
+	private LocalDate applDate;
 
 	private String applType;
 
@@ -25,7 +25,7 @@ public class ApplRowData {
 
 	private String personPatronymic;
 
-	private Date personBirsday;
+	private LocalDate personBirsday;
 
 	private String personGender;
 
@@ -46,21 +46,21 @@ public class ApplRowData {
 	private String inspectorFullName;
 
 	private String personAddressReg;
-	
+
 	private String personAddressPr;
 
 	private String personPolisNumber;
-	
+
 	private String rguidreg;
-	
+
 	private String aoguidreg;
-	
+
 	private String hsguidreg;
-	
+
 	private String rguidpr;
-	
+
 	private String aoguidpr;
-	
+
 	private String hsguidpr;
 
 	public String getNum() {
@@ -95,11 +95,11 @@ public class ApplRowData {
 		this.fsmoName = fsmoName;
 	}
 
-	public Date getApplDate() {
+	public LocalDate getApplDate() {
 		return applDate;
 	}
 
-	public void setApplDate(Date applDate) {
+	public void setApplDate(LocalDate applDate) {
 		this.applDate = applDate;
 	}
 
@@ -143,11 +143,11 @@ public class ApplRowData {
 		this.personPatronymic = personPatronymic;
 	}
 
-	public Date getPersonBirsday() {
+	public LocalDate getPersonBirsday() {
 		return personBirsday;
 	}
 
-	public void setPersonBirsday(Date personBirsday) {
+	public void setPersonBirsday(LocalDate personBirsday) {
 		this.personBirsday = personBirsday;
 	}
 
