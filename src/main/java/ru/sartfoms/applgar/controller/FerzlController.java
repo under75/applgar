@@ -1,6 +1,7 @@
 package ru.sartfoms.applgar.controller;
 
-import static ru.sartfoms.applgar.service.FerzlService.*;
+import static ru.sartfoms.applgar.service.FerzlService.policyType;
+import static ru.sartfoms.applgar.service.FerzlService.resultType;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.sartfoms.applgar.entity.ASY23MPIError;
 import ru.sartfoms.applgar.entity.MPIError;
 import ru.sartfoms.applgar.entity.MergeAncessorOip;
 import ru.sartfoms.applgar.entity.PersonData;
@@ -56,9 +58,9 @@ public class FerzlController {
 		}
 
 		PolicySearchParameters searchParams = (PolicySearchParameters) session.getAttribute("policySParam");
-		if (searchParams == null) 
+		if (searchParams == null)
 			searchParams = new PolicySearchParameters();
-		
+
 		@SuppressWarnings("unchecked")
 		Page<PersonData> dataPage = (Page<PersonData>) session.getAttribute("policyPage");
 		if (dataPage == null) {
@@ -67,7 +69,7 @@ public class FerzlController {
 			dataPage = ferzlService.getPersDataPage(searchParams, userName, page);
 		}
 		Map<Long, Boolean> requestStatusMap = ferzlService.getRequestStatusAsMap(dataPage);
-		
+
 		model.addAttribute("dataPage", dataPage);
 		model.addAttribute("requestStatusMap", requestStatusMap);
 		model.addAttribute("formParams", searchParams);
@@ -109,18 +111,18 @@ public class FerzlController {
 	}
 
 	@PostMapping("/policy/res")
-	public String getPolicy(Model model, @RequestParam("rid") Long rid) {
+	public String getPolicy(Model model, @RequestParam(value = "rid") Long rid) {
 		Collection<MPIError> errors = ferzlService.findErrorsByRid(rid);
 		if (errors.size() > 0) {
 			model.addAttribute("errors", errors);
-			return "pers-err";
+			return "mpi-err";
 		} else if (!ferzlService.getRequestStatusByRid(rid)) {
 			MPIError slovenly = new MPIError();
 			slovenly.setCode("slovenly");
 			slovenly.setMessage("Ошибка во введенных данных, проверьте корректность ввода");
 			errors.add(slovenly);
 			model.addAttribute("errors", errors);
-			return "pers-warn";
+			return "mpi-err";
 		}
 
 		Collection<Policy> policies = ferzlService.findPoliciesByRid(rid);
@@ -130,7 +132,7 @@ public class FerzlController {
 			notfound.setMessage("Действующего полиса не найдено");
 			errors.add(notfound);
 			model.addAttribute("errors", errors);
-			return "pers-warn";
+			return "mpi-err";
 		}
 
 		model.addAttribute("personData", ferzlService.getPersonDataByRid(rid));
@@ -193,7 +195,7 @@ public class FerzlController {
 	}
 
 	@PostMapping("/ancessor")
-	public String mergeAncessorOip(Model model, @ModelAttribute("searchParams") AncessorOipParameters searchParams,
+	public String mergeAncessorOip(Model model, @ModelAttribute("formParams") AncessorOipParameters searchParams,
 			BindingResult bindingResult, @RequestParam("page") Optional<Integer> page) {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -213,7 +215,7 @@ public class FerzlController {
 	@PostMapping("/ancessor/res")
 	public String ancessorOipResult(Model model, @RequestParam("rid") Long rid) {
 
-		Collection<MPIError> errors = ferzlService.findErrorsByRid(rid);
+		Collection<ASY23MPIError> errors = ferzlService._findErrorsByRid(rid);
 		if (errors.size() > 0) {
 			model.addAttribute("errors", errors);
 			return "mpi-err";

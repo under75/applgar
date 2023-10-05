@@ -19,6 +19,7 @@
 			</ol>
 		</nav>
 		<form th:method="POST" th:action="@{/policy}" id="searchForm">
+			<input type="hidden" name="rid" />
 			<div class="row small mb-1">
 				<div class="col-5">
 					<div class="form-group">
@@ -204,10 +205,10 @@
 				</svg>&nbsp;
 				<small th:errors="*{formParams}"></small>
 			</div>
-			<div class="row small">
+			<div class="row">
 				<div class="col">
 					<input type="submit" value="Поиск" class="btn btn-sm btn-primary"
-						name="saveRequest" />&nbsp;<input type="button" value="Очистить"
+						name="saveRequest"/>&nbsp;<input type="button" value="Очистить"
 						onclick="location.href='/policy?clear'" class="btn btn-sm btn-secondary" />&nbsp;<input
 						type="button" value="Обновить"
 						th:onclick="|goToPage(${dataPage != null ? dataPage.number + 1 : 1})|"
@@ -215,10 +216,14 @@
 						value="В Excel" th:onclick="|toExcel()|"
 						class="btn btn-sm btn-secondary" /> <input type="hidden" id="page"
 						name="page" />
+					<div class="badge text-bg-info"
+						th:if="${dataPage.getContent().size() > 0 && dataPage.getContent().get(0).hasError == null}">Запрос
+						в ФЕРЗЛ отправлен. Дождитесь начала новой минуты, затем нажмите
+						кнопку "Обновить"</div>
 				</div>
 			</div>
 			<hr/>
-			<div th:if="${dataPage != null && dataPage.content.size > 0}">
+			<div th:if="${dataPage.content.size > 0}">
 				<table class="table table-hover table-sm">
 					<thead class="table-dark">
 						<tr class="small">
@@ -306,12 +311,10 @@
 			</div>
 		</form>
 	</div>
-	<form th:method="POST" id="resForm">
-		<input type="hidden" name="rid" />
-	</form>
 	<footer class="text-center text-lg-start"
 		th:fragment="footer" th:insert="copyright">
 	</footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
 	<script th:inline="javascript">
 		document.getElementById("searchForm").onkeypress = function(e) {
 			var key = e.charCode || e.keyCode || 0;
@@ -325,10 +328,11 @@
 		}
 		function goToResult(rid, done) {
 			if (done == "true") {
-				form = document.getElementById("resForm");
+				form = document.getElementById("searchForm");
 				form.rid.value = rid;
 				form.action = "/policy/res";
 				form.submit();
+				form.action = "/policy";
 			}
 		}
 		function changeAccess(historical) {
@@ -361,6 +365,5 @@
 			form.action = "/policy";
 		}
 	</script>
-	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + ' - Поиск ОИП актуальной персоны-продолжателя'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Поиск ОИП актуальной персоны-продолжателя</li>
+			</ol>
+		</nav>
+		<form th:method="POST" th:action="@{/ancessor}" id="oipForm">
+			<input type="hidden" name="rid" />
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label class="col-form-label col-form-label-sm" for="oip">ОИП</label>
+						<input type="text" th:field="*{formParams.oip}" id="oip"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.oip')} ? 'is-invalid' : ''"
+							placeholder="обезличенный идентификатор" />
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col">
+					<input type="submit" value="Поиск" class="btn btn-sm btn-primary"
+						name="saveRequest" />&nbsp;<input type="button" value="Очистить"
+						onclick="location.href='/ancessor'"
+						class="btn btn-sm btn-secondary" />&nbsp;<input type="button"
+						value="Обновить" th:onclick="|goToPage(${dataPage.number + 1})|"
+						class="btn btn-sm btn-secondary" /><input type="hidden" id="page"
+						name="page" />
+					<div class="badge text-bg-info"
+						th:if="${dataPage.getContent().size() > 0 && dataPage.getContent().get(0).hasError == null}">Запрос
+						в ФЕРЗЛ отправлен. Дождитесь начала новой минуты, затем нажмите
+						кнопку "Обновить"</div>
+				</div>
+			</div>
+			<hr />
+			<div th:if="${dataPage.content.size} > 0">
+				<table class="table table-sm">
+					<thead class="table-dark">
+						<tr class="small">
+							<th>Дата поиска</th>
+							<th>ОИП</th>
+							<th>Дата объединения</th>
+							<th>ОИП продолжателя</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="persData, iStat : ${dataPage.content}" class='small'
+							th:classappend="|${persData.hasError != null && !persData.hasError ? 'table-success' : ''} ${persData.hasError != null && persData.hasError ? 'table-danger' : ''}|">
+							<td
+								th:attr="data-rid=${persData.rid}, data-err=${persData.hasError != null && persData.hasError}"
+								onclick="goToResult(this.getAttribute('data-rid'), this.getAttribute('data-err'))"
+								th:classappend="|${persData.hasError != null && persData.hasError ? 'btn-link' : ''}|"
+								th:style="${persData.hasError != null && persData.hasError ? 'cursor:pointer;' : ''}"
+								th:text="${#temporals.format(persData.dtIns, 'dd.MM.yyyy HH:mm:ss')}" />
+							<td th:text="${persData.oip}" />
+							<td
+								th:text="${#temporals.format(persData.whenMerged, 'dd.MM.yyyy HH:mm:ss')}" />
+							<td th:text="${persData.mergeAncessorOip}" />
+						</tr>
+					</tbody>
+				</table>
+				<nav aria-label="Pagination" th:if="${dataPage.totalPages gt 0}">
+					<ul
+						class="pagination pagination-sm justify-content-start font-weight-medium">
+						<li>Фильтр по дате поиска&nbsp;</li>
+						<li><input type="date" th:field="*{formParams.dateFrom}"
+							class="form-control form-control-sm" id="dateFrom" /></li>
+						<li>&nbsp;-&nbsp;</li>
+						<li><input type="date" th:field="*{formParams.dateTo}"
+							class="form-control form-control-sm" id="dateTo" /></li>
+						<li>&nbsp;<input type="button" value="Применить"
+							th:onclick="|goToPage(${dataPage.number + 1})|"
+							class="btn btn-sm btn-secondary" /></li>
+						<li class="page-item"
+							th:classappend="${dataPage.number eq 0} ? 'disabled'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number eq 0} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number lt 2 ? 1 : dataPage.number})|">
+								<p>&#60;&#60;
+								<p>
+							</button>
+						</li>
+						<li class="page-item"
+							th:classappend="${i eq dataPage.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence(dataPage.totalPages > dataPage.number + 10 ? dataPage.number + 1 : dataPage.totalPages - 10 > 0 ? dataPage.totalPages - 10 : 1, dataPage.totalPages > 10 + dataPage.number ? dataPage.number + 10 : dataPage.totalPages, 1)}">
+							<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
+							th:text="${i}"><span class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item disabled"
+							th:if="${dataPage.number + 10 < dataPage.totalPages}"><a
+							class="page-link" href="#"> ... </a></li>
+						<li class="page-item"
+							th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number + 2})|">
+								<p>&#62;&#62;
+								<p>
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start fixed-bottom"
+		th:fragment="footer" th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+	<script type="text/javascript">
+		document.getElementById("oipForm").onkeypress = function(e) {
+			var key = e.charCode || e.keyCode || 0;
+			if (key == 13) {
+				e.preventDefault();
+			}
+		}
+		function goToPage(page) {
+			document.getElementById("oipForm").page.value = page;
+			document.getElementById("oipForm").submit();
+		}
+		function goToResult(rid, err) {
+			if (err == "true") {
+				form = document.getElementById("oipForm");
+				form.rid.value = rid;
+				form.action = "/ancessor/res"
+				form.submit();
+				form.action = "/ancessor"
+			}
+		}
+	</script>
+</body>
