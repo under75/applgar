@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import ru.sartfoms.applgar.interceptors.LoginPageInterceptor;
+import ru.sartfoms.applgar.interceptor.LoginPageInterceptor;
 
 @Configuration
 @EnableWebSecurity

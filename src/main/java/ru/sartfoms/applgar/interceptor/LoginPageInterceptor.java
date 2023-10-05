@@ -1,4 +1,4 @@
-package ru.sartfoms.applgar.interceptors;
+package ru.sartfoms.applgar.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
