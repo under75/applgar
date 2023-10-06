@@ -84,11 +84,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>ru.sartfoms</groupId>
-			<artifactId>mo-attach</artifactId>
-			<version>1.0.5</version>
-		</dependency>
 	</dependencies>
 
 	<build>
