@@ -118,9 +118,7 @@ public class ApplService {
 	}
 
 	public Page<Appl> getPage(ApplSearchParameters applSParam, Optional<Integer> page, 
-			HttpSession session) throws ParseException {
-		User user = (User) session.getAttribute("user");
-
+			User user) throws ParseException {
 		LocalDate start = LocalDate.parse(applSParam.getDtReg1());
 		LocalDate end = LocalDate.parse(applSParam.getDtReg2()).plusDays(1);
 		String serDoc = applSParam.getSerDoc().trim();

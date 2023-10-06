@@ -23,8 +23,7 @@ public class SmoService {
 		this.fsmoRepository = fsmoRepository;
 	}
 
-	public Collection<Fsmo> findBranches(HttpSession session) {
-		User user = (User) session.getAttribute("user");
+	public Collection<Fsmo> findBranches(User user) {
 		Collection<Fsmo> result = null;
 
 		if (user.getRoles().stream().anyMatch(t -> t.getRole_name().equals(HSMO_ROLE))) {

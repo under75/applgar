@@ -57,7 +57,9 @@ public class ApplController {
 	}
 
 	@GetMapping("/appl")
-	public String index(Model model, @RequestParam("clear") Optional<?> clear, HttpSession session) throws ParseException {
+	public String index(Model model, @RequestParam("clear") Optional<?> clear, HttpSession session)
+			throws ParseException {
+
 		if (session.getAttribute("user") == null) {
 			User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
 			session.setAttribute("user", user);
@@ -76,18 +78,20 @@ public class ApplController {
 		}
 
 		model.addAttribute("formParams", applSParam);
-		model.addAttribute("inspectors", inspectorService.findInspectors(session));
-		model.addAttribute("branches", smoService.findBranches(session));
+		User user = (User) session.getAttribute("user");
+		model.addAttribute("inspectors", inspectorService.findInspectors(user));
+		model.addAttribute("branches", smoService.findBranches(user));
 
 		return "appl-form";
 	}
 
 	@PostMapping("/appl")
 	public String index(Model model, @ModelAttribute("formParams") @Valid ApplSearchParameters applSParam,
-			BindingResult bindingResult, @RequestParam("page") Optional<Integer> page, HttpSession session) throws ParseException {
-
-		model.addAttribute("inspectors", inspectorService.findInspectors(session));
-		model.addAttribute("branches", smoService.findBranches(session));
+			BindingResult bindingResult, @RequestParam("page") Optional<Integer> page, HttpSession session)
+			throws ParseException {
+		User user = (User) session.getAttribute("user");
+		model.addAttribute("inspectors", inspectorService.findInspectors(user));
+		model.addAttribute("branches", smoService.findBranches(user));
 		if (!DateValidator.isValid(applSParam.getDtReg1())) {
 			bindingResult.rejectValue("dtReg1", "Invalid date");
 		}
@@ -96,7 +100,7 @@ public class ApplController {
 		}
 
 		if (!bindingResult.hasErrors()) {
-			Page<Appl> applPage = applService.getPage(applSParam, page, session);
+			Page<Appl> applPage = applService.getPage(applSParam, page, user);
 			model.addAttribute("dataPage", applPage);
 
 			session.setAttribute("applPage", applPage);

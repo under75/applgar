@@ -6,8 +6,6 @@ import static ru.sartfoms.applgar.util.Constants.SMO_ADD_CODE;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Service;
 
 import ru.sartfoms.applgar.entity.Inspector;
@@ -22,8 +20,7 @@ public class InspectorService {
 		this.inspectorRepository = inspectorRepository;
 	}
 
-	public Collection<Inspector> findInspectors(HttpSession session) {
-		User user = (User) session.getAttribute("user");
+	public Collection<Inspector> findInspectors(User user) {
 		boolean userHasHsmoRole = user.getRoles().stream().filter(t -> t.getRole_name().equals(HSMO_ROLE))
 				.collect(Collectors.toList()).size() > 0;
 

@@ -16,11 +16,11 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import ru.sartfoms.applgar.interceptor.LoginPageInterceptor;
+import ru.sartfoms.applgar.util.ActiveUserStore;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
-
 	@Autowired
 	private DataSource dataSource;
 
@@ -39,6 +39,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 			}
 		}).usersByUsernameQuery("select u_name, u_hash, 1 from BIGADMIN.jpol_users where u_name=?")
 				.authoritiesByUsernameQuery("select u_name, u_type from BIGADMIN.jpol_users where u_name=?");
+		authBuilder.inMemoryAuthentication().withUser("admin").password("{noop}gruimed").authorities("admin", "tfoms");
 	}
 
 	@Bean
@@ -47,8 +48,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 				.successHandler(myAuthenticationSuccessHandler());
 		http.authorizeRequests().antMatchers("/resources/**", "/static/**", "/webjars/**", "/help/**").permitAll()
 				.antMatchers("/appl/**").hasAuthority("smo").antMatchers("/policy/**", "/ancessor/**")
-				.hasAnyAuthority("smo", "tfoms").anyRequest().authenticated().and().formLogin().permitAll().and()
-				.logout().permitAll().and().exceptionHandling().accessDeniedPage("/403");
+				.hasAnyAuthority("smo", "tfoms", "admin").antMatchers("/admin/**").hasAuthority("admin").anyRequest().authenticated()
+				.and().formLogin().permitAll().and().logout().permitAll().and().exceptionHandling()
+				.accessDeniedPage("/403");
 		return http.build();
 	}
 
@@ -60,6 +62,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoginPageInterceptor());
+	}
+
+	@Bean
+	public ActiveUserStore activeUserStore() {
+		return new ActiveUserStore();
 	}
 
 }
