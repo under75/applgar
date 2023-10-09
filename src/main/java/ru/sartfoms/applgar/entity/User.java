@@ -30,6 +30,15 @@ public class User implements Serializable {
 
 	@Column(name = "u_fsmo")
 	private Integer fSmo;
+	
+	@Column(name = "u_fam")
+	private String lastname;
+	
+	@Column(name = "u_nam")
+	private String firstname;
+	
+	@Column(name = "u_middle")
+	private String patronymic;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "u_name", referencedColumnName = "u_name")
@@ -61,6 +70,30 @@ public class User implements Serializable {
 
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getPatronymic() {
+		return patronymic;
+	}
+
+	public void setPatronymic(String patronymic) {
+		this.patronymic = patronymic;
 	}
 
 	public Integer getSmo() {

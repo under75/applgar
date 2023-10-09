@@ -22,6 +22,10 @@
 						<a class="nav-link"
 							th:classappend="${#httpServletRequest.servletPath.contains('/ancessor')} ? 'active' : ''"
 							href="/ancessor">Поиск ОИП актуальной персоны-продолжателя</a></li>
+					<li class="nav-item" sec:authorize="hasAuthority('admin')">
+						<a class="nav-link"
+							th:classappend="${#httpServletRequest.servletPath.contains('/admin')} ? 'active' : ''"
+							href="/admin">Страница администрирования</a></li>
 				</ul>
 			</div>
 			<form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
