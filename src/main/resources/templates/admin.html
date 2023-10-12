@@ -18,7 +18,7 @@
 				<li class="breadcrumb-item active" aria-current="page">Текущие авторизованные пользователи - <span th:text="${users.size}"></span></li>
 			</ol>
 		</nav>
-		<table class="table table-sm table-striped table-hover">
+		<table class="table table-sm table-hover">
 			<thead class="table-secondary">
 				<tr class="small">
 					<th>Id</th>
@@ -31,7 +31,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="user, iStat : ${users}" class='small'>
+				<tr th:each="user, iStat : ${users}" class='small' th:classappend="${user.id eq 'admin' ? 'table-danger' : ''}">
 					<td align="left" th:text="${user.id}" />
 					<td align="left" th:text="${#temporals.format(user.effDate, 'dd.MM.yyyy HH:mm:ss')}" />
 					<td align="left" th:text="${user.lastname}" />
