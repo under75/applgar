@@ -16,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import ru.sartfoms.applgar.interceptor.LoginPageInterceptor;
-import ru.sartfoms.applgar.util.ActiveUserStore;
 
 @Configuration
 @EnableWebSecurity
@@ -62,11 +61,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoginPageInterceptor());
-	}
-
-	@Bean
-	public ActiveUserStore activeUserStore() {
-		return new ActiveUserStore();
 	}
 
 }

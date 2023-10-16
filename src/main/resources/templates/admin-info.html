@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Страница администрирования'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y: scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br />
+	<br />
+	<br />
+	<div class="container">
+		<ul class="nav nav-tabs">
+			<li class="nav-item"><a class="nav-link" aria-current="page"
+				href="/admin">Текущие авторизованные пользователи - <span
+					th:text="${users.size}"></span></a></li>
+			<li class="nav-item"><a class="nav-link  active" href="#">Установка
+					оповещения</a></li>
+		</ul>
+		<br />
+		<form th:method="POST" th:action="@{/admin/info}" id="infoForm">
+			<div class="row mb-2">
+				<div class="col-10">
+					<div class="form-group">
+						<label class="form-label" for="message">Текст оповещения </label>
+						<textarea th:field="*{info.message}"
+							class="form-control">
+							</textarea>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label" for="type">Тип оповещения</label> <select
+							th:field="*{info.type}" class="form-select">
+							<option
+								th:each="value : ${T(ru.sartfoms.applgar.util.Info.Type).values()}"
+								th:value="${value}" th:text="${value}"
+								th:selected="${info.type}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row ">
+				<div class="col">
+					<button class="btn btn-primary">Установить</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start fixed-bottom"
+		th:fragment="footer" th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

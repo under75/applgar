@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ import ru.sartfoms.applgar.service.InspectorService;
 import ru.sartfoms.applgar.service.SmoService;
 import ru.sartfoms.applgar.service.UserService;
 import ru.sartfoms.applgar.util.DateValidator;
+import ru.sartfoms.applgar.util.Info;
 
 @Controller
 public class ApplController {
@@ -46,6 +48,8 @@ public class ApplController {
 	private final InspectorService inspectorService;
 	private final SmoService smoService;
 	private final UserService userService;
+	@Autowired
+	Info info;
 
 	public ApplController(ApplService service, AddressService<?> addrService, InspectorService inspectorService,
 			SmoService smoService, UserService userService) {
@@ -54,6 +58,11 @@ public class ApplController {
 		this.inspectorService = inspectorService;
 		this.smoService = smoService;
 		this.userService = userService;
+	}
+	
+	@ModelAttribute
+	public void addInfoToModel(Model model) {
+		model.addAttribute("info", info);
 	}
 
 	@GetMapping("/appl")

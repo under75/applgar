@@ -13,11 +13,12 @@
 	<header class="fixed-top" th:insert="menu :: navbar"></header>
 	<br /><br /><br />
 	<div class="container">
-		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb">
-				<li class="breadcrumb-item active" aria-current="page">Текущие авторизованные пользователи - <span th:text="${users.size}"></span></li>
-			</ol>
-		</nav>
+		<ul class="nav nav-tabs">
+			<li class="nav-item"><a class="nav-link active"
+				aria-current="page" href="#">Текущие авторизованные пользователи - <span th:text="${users.size}"></span></a></li>
+			<li class="nav-item"><a class="nav-link" href="/admin/info">Установка оповещения</a></li>
+		</ul>
+		<br/>
 		<table class="table table-sm table-hover">
 			<thead class="table-secondary">
 				<tr class="small">
@@ -31,7 +32,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="user, iStat : ${users}" class='small' th:classappend="${user.id eq 'admin' ? 'table-danger' : ''}">
+				<tr th:each="user, iStat : ${users}" class='small' th:classappend="${user.id eq 'admin' ? 'table-primary' : ''}">
 					<td align="left" th:text="${user.id}" />
 					<td align="left" th:text="${#temporals.format(user.effDate, 'dd.MM.yyyy HH:mm:ss')}" />
 					<td align="left" th:text="${user.lastname}" />

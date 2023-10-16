@@ -1,22 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title th:text="${@environment.getProperty('app.name')} + ' - Ввод адреса из ГАР'"></title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Ввод адреса из ГАР'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
 </head>
 
-<body style="overflow-y:scroll;">
+<body style="overflow-y: scroll;">
 	<header class="fixed-top" th:insert="menu :: navbar"></header>
-	<br /><br /><br />
+	<br />
+	<br />
+	<br />
 	<div class="container">
+	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="/appl">Поиск заявлений в ЕРЗ ТФОМС</a></li>
-				<li class="breadcrumb-item active" aria-current="page">Ввод адреса из ГАР</li>
+				<li class="breadcrumb-item"><a href="/appl">Поиск заявлений
+						в ЕРЗ ТФОМС</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Ввод
+					адреса из ГАР</li>
 			</ol>
 		</nav>
 		<form th:method="POST" th:action="@{/appl/addr}" id="addrForm">
@@ -36,8 +44,10 @@
 						<td align="left" th:text="${appl.fam}" />
 						<td align="left" th:text="${appl.im}" />
 						<td align="left" th:text="${appl.ot}" />
-						<td align="left" th:text="${#temporals.format(appl.dr, 'dd.MM.yyyy')}" />
-						<td align="left" th:text="${#temporals.format(appl.dtAppl, 'dd.MM.yyyy')}" />
+						<td align="left"
+							th:text="${#temporals.format(appl.dr, 'dd.MM.yyyy')}" />
+						<td align="left"
+							th:text="${#temporals.format(appl.dtAppl, 'dd.MM.yyyy')}" />
 					</tr>
 				</tbody>
 			</table>
@@ -51,11 +61,12 @@
 				<tbody>
 					<tr class="small">
 						<td align="left" th:text="${okato_reg}" />
-						<td align="left" th:text="${okato_pr}"/>
+						<td align="left" th:text="${okato_pr}" />
 					</tr>
 				</tbody>
 			</table>
-			<table class="table table-sm align-middle table-light" th:if="${appl.id_adrpr != null}">
+			<table class="table table-sm align-middle table-light"
+				th:if="${appl.id_adrpr != null}">
 				<thead class="table-secondary">
 					<tr class="small">
 						<th colspan="2">Адрес регистрации (выбор из ГАР)</th>
@@ -65,72 +76,83 @@
 				<tbody>
 					<tr class="small">
 						<td class="w-25">Субъект РФ</td>
-						<td class="w-50"><select th:field="*{selAddress.idlev1Reg}" class="form-select form-select-sm"
-								onchange="this.form.submit()">
+						<td class="w-50"><select th:field="*{selAddress.idlev1Reg}"
+							class="form-select form-select-sm" onchange="this.form.submit()">
 								<option id="freglev1" value=""></option>
-								<option th:each="address : ${gar.level1Reg}" th:value="${address.id}"
+								<option th:each="address : ${gar.level1Reg}"
+									th:value="${address.id}"
 									th:text="${address.name} +' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev1Reg}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev1Reg}" id="freglev1"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev1Reg}"
+							id="freglev1" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Город, район, населенный пункт</td>
-						<td><select th:field="*{selAddress.idlev2Reg}" class="form-select form-select-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev2Reg}"
+							class="form-select form-select-sm" onchange="this.form.submit()">
 								<option id="freglev2" value=""></option>
-								<option th:each="address : ${gar.level2Reg}" th:value="${address.id}"
+								<option th:each="address : ${gar.level2Reg}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev2Reg}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev2Reg}" id="freglev2"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev2Reg}"
+							id="freglev2" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Код ГАР с точностью до улицы</td>
-						<td><select th:field="*{selAddress.idlev3Reg}" class="form-select form-select-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev3Reg}"
+							class="form-select form-select-sm" onchange="this.form.submit()">
 								<option id="freglev3" value=""></option>
-								<option th:each="address : ${gar.level3Reg}" th:value="${address.id}"
+								<option th:each="address : ${gar.level3Reg}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev3Reg}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev3Reg}" id="freglev3"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev3Reg}"
+							id="freglev3" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr th:if="${gar.level31Reg != null}" class="small">
 						<td></td>
-						<td><select th:field="*{selAddress.idlev31Reg}" class="form-select form-select-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev31Reg}"
+							class="form-select form-select-sm" onchange="this.form.submit()">
 								<option id="freglev31" value=""></option>
-								<option th:each="address : ${gar.level31Reg}" th:value="${address.id}"
+								<option th:each="address : ${gar.level31Reg}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev31Reg}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev31Reg}" id="freglev31"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev31Reg}"
+							id="freglev31" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Код ГАР с точностью до дома</td>
-						<td><select th:field="*{selAddress.idlev4Reg}" class="form-select form-select-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev4Reg}"
+							class="form-select form-select-sm" onchange="this.form.submit()">
 								<option id="freglev4" value=""></option>
-								<option th:each="address : ${gar.level4Reg}" th:value="${address.id}"
+								<option th:each="address : ${gar.level4Reg}"
+									th:value="${address.id}"
 									th:text="${address.houseNum}+' ' + (${address.addNum1}?${address.addNum1}:'')+' ' + (${address.addNum2}?${address.addNum2}:'')"
 									th:selected="${selAddress.idlev4Reg}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev4Reg}" id="freglev4"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev4Reg}"
+							id="freglev4" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 				</tbody>
 			</table>
-			<table class="table table-sm align-middle table-light" th:if="${appl.id_adrpr != appl.id_adrreg}">
+			<table class="table table-sm align-middle table-light"
+				th:if="${appl.id_adrpr != appl.id_adrreg}">
 				<thead class="table-secondary">
 					<tr class="small">
 						<th colspan="2">Адрес проживания (выбор из ГАР)</th>
@@ -140,91 +162,109 @@
 				<tbody>
 					<tr class="small">
 						<td class="w-25">Субъект РФ</td>
-						<td class="w-50"><select th:field="*{selAddress.idlev1Pr}" class="form-control form-control-sm"
-								onchange="this.form.submit()">
+						<td class="w-50"><select th:field="*{selAddress.idlev1Pr}"
+							class="form-control form-control-sm"
+							onchange="this.form.submit()">
 								<option id="fprlev1" value=""></option>
-								<option th:each="address : ${gar.level1Pr}" th:value="${address.id}"
+								<option th:each="address : ${gar.level1Pr}"
+									th:value="${address.id}"
 									th:text="${address.name} +' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev1Pr}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev1Pr}" id="fprlev1"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev1Pr}"
+							id="fprlev1" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Город, район, населенный пункт</td>
-						<td><select th:field="*{selAddress.idlev2Pr}" class="form-control form-control-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev2Pr}"
+							class="form-control form-control-sm"
+							onchange="this.form.submit()">
 								<option id="fprlev2" value=""></option>
-								<option th:each="address : ${gar.level2Pr}" th:value="${address.id}"
+								<option th:each="address : ${gar.level2Pr}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev2Pr}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev2Pr}" id="fprlev2"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev2Pr}"
+							id="fprlev2" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Код ГАР с точностью до улицы</td>
-						<td><select th:field="*{selAddress.idlev3Pr}" class="form-control form-control-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev3Pr}"
+							class="form-control form-control-sm"
+							onchange="this.form.submit()">
 								<option id="fprlev3" value=""></option>
-								<option th:each="address : ${gar.level3Pr}" th:value="${address.id}"
+								<option th:each="address : ${gar.level3Pr}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev3Pr}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev3Pr}" id="fprlev3"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev3Pr}"
+							id="fprlev3" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr th:if="${gar.level31Pr != null}" class="small">
 						<td></td>
-						<td><select th:field="*{selAddress.idlev31Pr}" class="form-control form-control-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev31Pr}"
+							class="form-control form-control-sm"
+							onchange="this.form.submit()">
 								<option id="fprlev31" value=""></option>
-								<option th:each="address : ${gar.level31Pr}" th:value="${address.id}"
+								<option th:each="address : ${gar.level31Pr}"
+									th:value="${address.id}"
 									th:text="${address.name}+' ' + ${address.typeName}"
 									th:selected="${selAddress.idlev31Pr}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev31Pr}" id="fprlev31"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev31Pr}"
+							id="fprlev31" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 					<tr class="small">
 						<td>Код ГАР с точностью до дома</td>
-						<td><select th:field="*{selAddress.idlev4Pr}" class="form-control form-control-sm"
-								onchange="this.form.submit()">
+						<td><select th:field="*{selAddress.idlev4Pr}"
+							class="form-control form-control-sm"
+							onchange="this.form.submit()">
 								<option id="fprlev4" value=""></option>
-								<option th:each="address : ${gar.level4Pr}" th:value="${address.id}"
+								<option th:each="address : ${gar.level4Pr}"
+									th:value="${address.id}"
 									th:text="${address.houseNum}+' ' + (${address.addNum1}?${address.addNum1}:'')+' ' + (${address.addNum2}?${address.addNum2}:'')"
 									th:selected="${selAddress.idlev4Pr}"></option>
-							</select></td>
-						<td><input type="text" th:field="*{filter.lev4Pr}" id="fprlev4"
-								class="form-control form-control-sm" /></td>
-						<td><input type="submit" value="Фильтр" class="btn btn-sm btn-outline-secondary" /></td>
+						</select></td>
+						<td><input type="text" th:field="*{filter.lev4Pr}"
+							id="fprlev4" class="form-control form-control-sm" /></td>
+						<td><input type="submit" value="Фильтр"
+							class="btn btn-sm btn-outline-secondary" /></td>
 					</tr>
 				</tbody>
 			</table>
 			<table class="table table-sm">
 				<tr class="small">
-					<td><input type="submit" value="Запись" class="btn btn-sm btn-primary" name="save" />
-						<input type="button" value="Закрыть" class="btn btn-sm btn-secondary"
-							onclick="document.location.href='/appl'" /></td>
+					<td><input type="submit" value="Запись"
+						class="btn btn-sm btn-primary" name="save" /> <input
+						type="button" value="Закрыть" class="btn btn-sm btn-secondary"
+						onclick="document.location.href='/appl'" /></td>
 				</tr>
 			</table>
-			<div class="alert alert-success d-flex align-items-center" role="alert"
-				th:if="${saved != null && saved != 0}">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-					class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+			<div class="alert alert-success d-flex align-items-center"
+				role="alert" th:if="${saved != null && saved != 0}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+					fill="currentColor" class="bi bi-check-circle-fill text-success"
+					viewBox="0 0 16 16">
 					<path
 						d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-				</svg>&nbsp;
-				<small>Запись успешно сохранена!</small>
+				</svg>
+				&nbsp; <small>Запись успешно сохранена!</small>
 			</div>
 		</form>
-		<footer class="text-center text-lg-start" th:fragment="footer" th:insert="copyright">
-		</footer>
-		<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+	</div>
+	<footer class="text-center text-lg-start" th:fragment="footer"
+		th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
 </body>
 
 </html>

@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.stereotype.Component;
+
 import ru.sartfoms.applgar.model.UserDTO;
 
+@Component
 public class ActiveUserStore implements Serializable{
 	private static final long serialVersionUID = 1L;
-	public Collection<UserDTO> users;
+	private Collection<UserDTO> users;
 
 	public ActiveUserStore() {
 		users = new ArrayList<UserDTO>();

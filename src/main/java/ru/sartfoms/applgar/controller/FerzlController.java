@@ -38,15 +38,23 @@ import ru.sartfoms.applgar.exception.ExcelGeneratorException;
 import ru.sartfoms.applgar.model.AncessorOipParameters;
 import ru.sartfoms.applgar.model.PolicySearchParameters;
 import ru.sartfoms.applgar.service.FerzlService;
+import ru.sartfoms.applgar.util.Info;
 
 @Controller
 public class FerzlController {
 	private final FerzlService ferzlService;
 	@Autowired
 	SmartValidator validator;
+	@Autowired
+	Info info;
 
 	public FerzlController(FerzlService ferzlService) {
 		this.ferzlService = ferzlService;
+	}
+	
+	@ModelAttribute
+	public void addInfoToModel(Model model) {
+		model.addAttribute("info", info);
 	}
 
 	@GetMapping("/policy")

@@ -14,6 +14,7 @@
 	<header class="fixed-top" th:insert="menu :: navbar"></header>
 	<br /><br /><br />
 	<div class="container">
+	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
 				<li th:if="${#httpServletRequest.servletPath.contains('/policy')}" class="breadcrumb-item"><a

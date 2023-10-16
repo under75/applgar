@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="alert d-flex align-items-center" role="alert"
+	th:classappend="${info.style}" th:fragment="info">
+	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+		fill="currentColor" class="bi bi-exclamation-triangle-fill"
+		th:classappend="${info.icon.style}" viewBox="0 0 16 16"
+		th:if="${info.icon.path != null}">
+					<path th:d="${info.icon.path}" />
+				</svg>
+	&nbsp;&nbsp;<span th:text="${info.message}"></span>
+</div>
+</html>
