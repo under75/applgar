@@ -15,8 +15,8 @@ import javax.persistence.Table;
 public class MergeAncessorOip {
 	@Id
 	@Column(name = "rid")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "asy23_id_sequence")
-	@SequenceGenerator(name = "asy23_id_sequence", sequenceName = "ASY23.MPI_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
+	@SequenceGenerator(name = "id_sequence", sequenceName = "ASY23.MPI_SEQ", allocationSize = 1)
 	private Long rid;
 
 	@Column(name = "usr")

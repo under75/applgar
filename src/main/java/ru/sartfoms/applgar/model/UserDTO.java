@@ -1,8 +1,11 @@
 package ru.sartfoms.applgar.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 	
 	private LocalDateTime effDate;

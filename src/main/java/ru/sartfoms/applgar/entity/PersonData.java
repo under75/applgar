@@ -2,6 +2,7 @@ package ru.sartfoms.applgar.entity;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,12 +15,12 @@ import javax.persistence.Table;
 import org.thymeleaf.util.StringUtils;
 
 @Entity
-@Table(name = "mpi_person_data", schema = "OMCOWNER")
+@Table(name = "mpi_person_data", schema = "ASY23")
 public class PersonData {
 	@Id
 	@Column(name = "rid")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
-	@SequenceGenerator(name = "id_sequence", sequenceName = "OMCOWNER.MPI_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "id_sequence", sequenceName = "ASY23.MPI_SEQ", allocationSize = 1)
 	private Long rid;
 
 	@Column(name = "hist")
@@ -82,7 +83,7 @@ public class PersonData {
 	private String user;
 
 	@Column(name = "dt_ins")
-	private LocalDate dtIns;
+	private LocalDateTime dtIns;
 	
 	@Column(name = "err")
 	private Boolean hasError;
@@ -264,11 +265,11 @@ public class PersonData {
 		this.dtTo = dtTo;
 	}
 
-	public LocalDate getDtIns() {
+	public LocalDateTime getDtIns() {
 		return dtIns;
 	}
 
-	public void setDtIns(LocalDate dtIns) {
+	public void setDtIns(LocalDateTime dtIns) {
 		this.dtIns = dtIns;
 	}
 

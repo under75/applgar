@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 import ru.sartfoms.applgar.dao.PersonDataDAO;
-import ru.sartfoms.applgar.entity.ASY23MPIError;
 import ru.sartfoms.applgar.entity.DudlType;
 import ru.sartfoms.applgar.entity.MPIError;
 import ru.sartfoms.applgar.entity.MergeAncessorOip;
@@ -34,7 +33,6 @@ import ru.sartfoms.applgar.model.AncessorOipParameters;
 import ru.sartfoms.applgar.model.PersonDataForRequestValidation;
 import ru.sartfoms.applgar.model.PolicyRowData;
 import ru.sartfoms.applgar.model.PolicySearchParameters;
-import ru.sartfoms.applgar.repository.ASY23MPIErrorRepository;
 import ru.sartfoms.applgar.repository.DudlTypeRepository;
 import ru.sartfoms.applgar.repository.MPIErrorRepository;
 import ru.sartfoms.applgar.repository.MergeAncessorOipRepository;
@@ -51,7 +49,6 @@ public class FerzlService {
 	private final PersonDataRepository personDataRepository;
 	private final MergeAncessorOipRepository mergeAncessorOipRepository;
 	private final MPIErrorRepository errorRepository;
-	private final ASY23MPIErrorRepository asy23ErrorRepository;
 	private final PolicyRepository policyRepository;
 
 	public enum Show {
@@ -75,14 +72,13 @@ public class FerzlService {
 	public FerzlService(DudlTypeRepository dudlTypeRepository, PersonDataDAO personDataDAO,
 			PersonRepository personRepository, PersonDataRepository personDataRepository,
 			MergeAncessorOipRepository mergeAncessorOipRepository, PolicyRepository policyRepository,
-			MPIErrorRepository errorRepository, ASY23MPIErrorRepository asy23ErrorRepository) {
+			MPIErrorRepository errorRepository) {
 		this.dudlTypeRepository = dudlTypeRepository;
 		this.personDataDAO = personDataDAO;
 		this.personRepository = personRepository;
 		this.personDataRepository = personDataRepository;
 		this.mergeAncessorOipRepository = mergeAncessorOipRepository;
 		this.errorRepository = errorRepository;
-		this.asy23ErrorRepository = asy23ErrorRepository;
 		this.policyRepository = policyRepository;
 	}
 
@@ -196,6 +192,7 @@ public class FerzlService {
 		}
 		personData.setUser(userName);
 		personData.setShow(Show.Person + " " + Show.OmsPolicy);
+		personData.setDtIns(LocalDateTime.now());
 
 		personData = personDataRepository.save(personData);
 		personDataDAO.save(personData.getRid(), searchParams.getLastName().trim(), searchParams.getFirstName().trim(),
@@ -212,17 +209,17 @@ public class FerzlService {
 				&& searchParams.getDateTo() != null && !searchParams.getDateTo().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateFrom())
 				&& DateValidator.isValid(searchParams.getDateTo())) {
-			LocalDate start = LocalDate.parse(searchParams.getDateFrom());
-			LocalDate end = LocalDate.parse(searchParams.getDateTo()).plusDays(1);
+			LocalDateTime start = LocalDate.parse(searchParams.getDateFrom()).atStartOfDay();
+			LocalDateTime end = LocalDate.parse(searchParams.getDateTo()).plusDays(1).atStartOfDay();
 			dataPage = personDataRepository.findByUserAndDtInsBetweenOrderByDtInsDesc(userName, start, end,
 					pageRequest);
 		} else if (searchParams.getDateFrom() != null && !searchParams.getDateFrom().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateFrom())) {
-			LocalDate start = LocalDate.parse(searchParams.getDateFrom());
+			LocalDateTime start = LocalDate.parse(searchParams.getDateFrom()).atStartOfDay();
 			dataPage = personDataRepository.findByUserAndDtInsAfterOrderByDtInsDesc(userName, start, pageRequest);
 		} else if (searchParams.getDateTo() != null && !searchParams.getDateTo().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateTo())) {
-			LocalDate end = LocalDate.parse(searchParams.getDateTo()).plusDays(1);
+			LocalDateTime end = LocalDate.parse(searchParams.getDateTo()).plusDays(1).atStartOfDay();
 			dataPage = personDataRepository.findByUserAndDtInsBeforeOrderByDtInsDesc(userName, end, pageRequest);
 		} else {
 			dataPage = personDataRepository.findByUserOrderByDtInsDesc(userName, pageRequest);
@@ -233,10 +230,6 @@ public class FerzlService {
 
 	public Collection<MPIError> findErrorsByRid(Long rid) {
 		return errorRepository.findAllByRid(rid);
-	}
-
-	public Collection<ASY23MPIError> _findErrorsByRid(Long rid) {
-		return asy23ErrorRepository.findAllByRid(rid);
 	}
 
 	public boolean getRequestStatusByRid(Long rid) {
@@ -307,19 +300,19 @@ public class FerzlService {
 				&& searchParams.getDateTo() != null && !searchParams.getDateTo().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateFrom())
 				&& DateValidator.isValid(searchParams.getDateTo())) {
-			LocalDate start = LocalDate.parse(searchParams.getDateFrom());
-			LocalDate end = LocalDate.parse(searchParams.getDateTo()).plusDays(1);
+			LocalDateTime start = LocalDate.parse(searchParams.getDateFrom()).atStartOfDay();
+			LocalDateTime end = LocalDate.parse(searchParams.getDateTo()).plusDays(1).atStartOfDay();
 			dataPage = mergeAncessorOipRepository.findByUserAndDtInsBetweenOrderByDtInsDesc(userName,
-					start.atStartOfDay(), end.atStartOfDay(), pageRequest);
+					start, end, pageRequest);
 		} else if (searchParams.getDateFrom() != null && !searchParams.getDateFrom().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateFrom())) {
-			LocalDate start = LocalDate.parse(searchParams.getDateFrom());
+			LocalDateTime start = LocalDate.parse(searchParams.getDateFrom()).atStartOfDay();
 			dataPage = mergeAncessorOipRepository.findByUserAndDtInsAfterOrderByDtInsDesc(userName,
-					start.atStartOfDay(), pageRequest);
+					start, pageRequest);
 		} else if (searchParams.getDateTo() != null && !searchParams.getDateTo().isEmpty()
 				&& DateValidator.isValid(searchParams.getDateTo())) {
-			LocalDate end = LocalDate.parse(searchParams.getDateTo()).plusDays(1);
-			dataPage = mergeAncessorOipRepository.findByUserAndDtInsBeforeOrderByDtInsDesc(userName, end.atStartOfDay(),
+			LocalDateTime end = LocalDate.parse(searchParams.getDateTo()).plusDays(1).atStartOfDay();
+			dataPage = mergeAncessorOipRepository.findByUserAndDtInsBeforeOrderByDtInsDesc(userName, end,
 					pageRequest);
 		} else {
 			dataPage = mergeAncessorOipRepository.findByUserOrderByDtInsDesc(userName, pageRequest);
