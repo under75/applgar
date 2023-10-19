@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "mpi_person", schema = "ASY23")
+@Table(name = "mpi_person", schema = "OMCOWNER")
 @IdClass(CompositeKey.class)
 public class Person {
 	@Id

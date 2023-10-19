@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.sartfoms.applgar.entity.ASY23MPIError;
 import ru.sartfoms.applgar.entity.MPIError;
 import ru.sartfoms.applgar.entity.MergeAncessorOip;
 import ru.sartfoms.applgar.entity.PersonData;
@@ -222,7 +223,7 @@ public class FerzlController {
 	@PostMapping("/ancessor/res")
 	public String ancessorOipResult(Model model, @RequestParam("rid") Long rid) {
 
-		Collection<MPIError> errors = ferzlService.findErrorsByRid(rid);
+		Collection<ASY23MPIError> errors = ferzlService._findErrorsByRid(rid);
 		if (errors.size() > 0) {
 			model.addAttribute("errors", errors);
 			return "mpi-err";

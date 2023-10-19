@@ -15,12 +15,12 @@ import javax.persistence.Table;
 import org.thymeleaf.util.StringUtils;
 
 @Entity
-@Table(name = "mpi_person_data", schema = "ASY23")
+@Table(name = "mpi_person_data", schema = "OMCOWNER")
 public class PersonData {
 	@Id
 	@Column(name = "rid")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
-	@SequenceGenerator(name = "id_sequence", sequenceName = "ASY23.MPI_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "id_sequence", sequenceName = "OMCOWNER.MPI_SEQ", allocationSize = 1)
 	private Long rid;
 
 	@Column(name = "hist")
