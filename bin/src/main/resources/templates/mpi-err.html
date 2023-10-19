@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + ' - Ошибки, препятствующие получению персональных
+	данных'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li th:if="${#httpServletRequest.servletPath.contains('/policy')}" class="breadcrumb-item"><a
+						href="/policy">Поиск информации о полисах в ФЕРЗЛ</a></li>
+				<li th:if="${#httpServletRequest.servletPath.contains('/ancessor')}" class="breadcrumb-item"><a
+						href="/ancessor">Поиск ОИП актуальной персоны-продолжателя</a></li>
+
+				<li class="breadcrumb-item active" aria-current="page">Ошибки,
+					препятствующие получению персональных данных</li>
+			</ol>
+		</nav>
+		<table class="table table-sm">
+			<thead>
+				<tr class="small">
+					<th>Код</th>
+					<th>Текст сообщения</th>
+					<th>Поле с ошибкой</th>
+					<th>Значение поля</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="error : ${errors}" class='small'>
+					<td th:text="${error.code}" />
+					<td th:text="${error.message}" />
+					<td th:text="${error.tag}" />
+					<td th:text="${error.value}" />
+				</tr>
+			</tbody>
+		</table>
+		<th:block th:if="${#httpServletRequest.servletPath.contains('/policy')}">
+			<input type="button" value="Закрыть" class="btn btn-sm btn-secondary"
+			th:onclick="document.location.href='/policy'" />
+		</th:block>
+		<th:block th:if="${#httpServletRequest.servletPath.contains('/ancessor')}">
+			<input type="button" value="Закрыть" class="btn btn-sm btn-secondary"
+			th:onclick="document.location.href='/ancessor'" />
+		</th:block>
+	</div>
+	<footer class="text-center text-lg-start fixed-bottom" th:fragment="footer" th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>

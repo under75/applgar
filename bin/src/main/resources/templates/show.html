@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+	<div class="accordion-item" th:fragment="Person">
+		<h2 class="accordion-header" id="headingPerson">
+			<button
+				th:text="${resultTypes.get(T(ru.sartfoms.applgar.service.FerzlService.Show).Person)}"
+				class="accordion-button collapsed" data-bs-toggle="collapse"
+				data-bs-target="#collapsePerson" aria-expanded="false"
+				aria-controls="collapsePerson"></button>
+		</h2>
+		<div id="collapsePerson" class="accordion-collapse collapse"
+			aria-labelledby="headingPerson" data-bs-parent="#accordion">
+			<div class="accordion-body">
+				<table class="table table-sm" th:if="${persons.size > 0}">
+					<thead>
+						<tr class="small">
+							<th>Фамилия</th>
+							<th>Имя</th>
+							<th>Отчество</th>
+							<th>Дата рождения</th>
+							<th>Пол</th>
+							<th>Страна рождения</th>
+							<th>Дата смерти</th>
+							<th>Дата объединения</th>
+							<th>Статус</th>
+							<th>Дата изменения</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="person : ${persons}" class='small'>
+							<td th:text="${person.lastName}" />
+							<td th:text="${person.firstName}" />
+							<td th:text="${person.patronymic}" />
+							<td th:text="${#temporals.format(person.birthDay, 'dd.MM.yyyy')}" />
+							<td
+								th:text="${person.gender == 1 ? 'М' : person.gender == 2 ? 'Ж' : '?'}" />
+							<td
+								th:text="${person.birthOksm != null ? person.birthOksm.name2 : ''}" />
+							<td
+								th:text="${#temporals.format(person.deathDate, 'dd.MM.yyyy')}" />
+							<td><a
+								th:text="${#temporals.format(person.whenMerged, 'dd.MM.yyyy HH:mm:ss')}"
+								href="#" data-bs-toggle="tooltip"
+								data-bs-title="Необходимо запросить ОИП главной персоны методом getMergeAncessorOip"></a></td>
+							<td th:text="${person.status}" />
+							<td
+								th:text="${#temporals.format(person.dateEdit, 'dd.MM.yyyy HH:mm:ss')}" />
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="accordion-item" th:fragment="OmsPolicy">
+		<h2 class="accordion-header" id="headingPolicy">
+			<button
+				th:text="${resultTypes.get(T(ru.sartfoms.applgar.service.FerzlService.Show).OmsPolicy)}"
+				class="accordion-button collapsed" data-bs-toggle="collapse"
+				data-bs-target="#collapsePolicy" aria-expanded="false"
+				aria-controls="collapsePolicy"></button>
+		</h2>
+		<div id="collapsePolicy" class="accordion-collapse collapse"
+			aria-labelledby="headingPolicy" data-bs-parent="#accordion">
+			<div class="accordion-body">
+				<div class="row shadow-lg p-3 mb-5 bg-white rounded"
+					th:if="${policies.size > 0}" th:each="policy : ${policies}">
+
+					<div class="col-4">ФИО</div>
+					<div class="col-8"
+						th:text="${policy.lastName + ' ' + policy.firstName + ' ' + policy.patronymic}"></div>
+
+					<div class="col-4 bg-light">Дата рождения</div>
+					<div class="col-8 bg-light"
+						th:text="${#temporals.format(policy.birthDay, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4">Полис(старого образца)</div>
+					<div class="col-8"
+						th:text="${policy.pcySer != null ? policy.pcySer : ''} + ' ' + ${policy.pcyNum != null ? policy.pcyNum : ''}"></div>
+
+					<div class="col-4 bg-light">ЕНП расчетный</div>
+					<div class="col-8 bg-light" th:text="${policy.enpCalc}"></div>
+
+					<div class="col-4">ЕНП (нового образца)</div>
+					<div class="col-8" th:text="${policy.enp}"></div>
+
+					<div class="col-4 bg-light">Дата начала действия полиса</div>
+					<div class="col-8 bg-light"
+						th:text="${#temporals.format(policy.pcyDateB, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4">Дата окончания действия полиса</div>
+					<div class="col-8"
+						th:text="${#temporals.format(policy.pcyDateE, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4 bg-light">Дата выдачи полиса на руки</div>
+					<div class="col-8 bg-light"
+						th:text="${#temporals.format(policy.pcyDateH, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4">Дата обращения за полисом</div>
+					<div class="col-8"
+						th:text="${#temporals.format(policy.pcyDateT, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4 bg-light">Дата расчёта номера ЕНП</div>
+					<div class="col-8 bg-light"
+						th:text="${#temporals.format(policy.pcyDateEnpCalc, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4">Дата изготовления полиса</div>
+					<div class="col-8"
+						th:text="${#temporals.format(policy.pcyDatePr, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4 bg-light">Тип полиса страхования</div>
+					<div class="col-8 bg-light" th:text="${policy.pcyType}"></div>
+
+					<div class="col-4">Статус полиса</div>
+					<div class="col-8" th:text="${policy.pcyStatus}"></div>
+
+					<div class="col-4 bg-light">ОКАТО территории страхования</div>
+					<div class="col-8 bg-light"
+						th:text="${policy.okato != null ? policy.okato.title : ''}"></div>
+
+					<div class="col-4">Источник данных</div>
+					<div class="col-8"
+						th:text="${policy.dsource != null ? policy.dsource.title : policy.dsourceStr}"></div>
+
+					<div class="col-4 bg-light">Вид источника данных</div>
+					<div class="col-8 bg-light" th:text="${policy.dsourceType}"></div>
+
+					<div class="col-4">Описание</div>
+					<div class="col-8" th:text="${policy.descr}"></div>
+
+					<div class="col-4 bg-light">Половая принадлежность</div>
+					<div class="col-8 bg-light"
+						th:text="${policy.gender == 1 ? 'М' : policy.gender == 2 ? 'Ж' : '?'}"></div>
+
+					<div class="col-4">Официальная СМО</div>
+					<div class="col-8" th:text="${policy.insurName}"></div>
+
+					<div class="col-4 bg-light">Фактическая СМО</div>
+					<div class="col-8 bg-light" th:text="${policy.insurfName}"></div>
+
+					<div class="col-4">ОГРН официальной СМО</div>
+					<div class="col-8" th:text="${policy.insurOgrn}"></div>
+
+					<div class="col-4 bg-light">ОГРН фактической СМО</div>
+					<div class="col-8 bg-light" th:text="${policy.insurfOgrn}"></div>
+
+					<div class="col-4">Код официальной СМО</div>
+					<div class="col-8" th:text="${policy.insurCode}"></div>
+
+					<div class="col-4 bg-light">Код фактической СМО</div>
+					<div class="col-8 bg-light" th:text="${policy.insurfCode}"></div>
+
+					<div class="col-4">Дата начала работы с ЗЛ</div>
+					<div class="col-8"
+						th:text="${#temporals.format(policy.insurfDate, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4 bg-light">Номер временного свидет-ва</div>
+					<div class="col-8 bg-light" th:text="${policy.tmpcertNum}"></div>
+
+					<div class="col-4">Дата начала действия ВС</div>
+					<div class="col-8"
+						th:text="${#temporals.format(policy.tmpcertDateB, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4 bg-light">Дата окончания действия ВС</div>
+					<div class="col-8 bg-light"
+						th:text="${#temporals.format(policy.tmpcertDateE, 'dd.MM.yyyy')}"></div>
+
+					<div class="col-4">Номер универсал. элек. карты</div>
+					<div class="col-8" th:text="${policy.uekNum}"></div>
+
+					<div class="col-4 bg-light">Категория ЗЛ</div>
+					<div class="col-8 bg-light"
+						th:text="${policy.pcyCategory != null ? policy.pcyCategory.name : ''}"></div>
+
+					<div class="col-4">Номер бланка полиса</div>
+					<div class="col-8" th:text="${policy.blankNum}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

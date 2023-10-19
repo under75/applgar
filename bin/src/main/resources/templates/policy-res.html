@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + ' - Информация о полисе ОМС'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="/policy">Поиск информации о полисах в ФЕРЗЛ</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Информация о полисе ОМС</li>
+			</ol>
+		</nav>
+		<div class="accordion" id="accordion">
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="headingOip">
+					<button class="accordion-button collapsed" type="button"
+						data-bs-toggle="collapse" data-bs-target="#collapseOip"
+						aria-expanded="false" aria-controls="collapseOip">
+						Обезличенный идентификатор
+						персоны</button>
+				</h2>
+				<div id="collapseOip" class="accordion-collapse collapse"
+					aria-labelledby="headingOip" data-bs-parent="#accordion">
+					<div class="accordion-body">
+						<p class="card-text" th:text="${personData.oipRes}"></p>
+					</div>
+				</div>
+			</div>
+			<th:block th:insert="show :: Person"></th:block> 
+			<th:block th:insert="show :: OmsPolicy"></th:block>
+			</div>
+		<br />
+		<div class="row">
+			<div class="col-sm">
+				<input type="button" value="В Excel"
+					th:onclick="|location.href='/policy/res/excel?rid=${personData.rid}'|"
+					class="btn btn-sm btn-primary" />
+				<input type="button" value="Закрыть" class="btn btn-sm btn-secondary"
+							onclick="document.location.href='/policy'" />
+			</div>
+		</div>
+	</div>
+	<footer class="text-center text-lg-start" th:fragment="footer"
+		th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

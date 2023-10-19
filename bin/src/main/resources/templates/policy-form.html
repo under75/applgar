@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + ' - Поиск информации о полисах в ФЕРЗЛ'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Поиск информации о полисах в ФЕРЗЛ</li>
+			</ol>
+		</nav>
+		<form th:method="POST" th:action="@{/policy}" id="searchForm">
+			<input type="hidden" name="rid" />
+			<div class="row small mb-1">
+				<div class="col-5">
+					<div class="form-group">
+						<label class="form-label m-0" for="policyType">Тип полиса
+							страхования</label> <select th:field="*{formParams.policyType}"
+							class="form-select form-select-sm">
+							<option value=""></option>
+							<option th:each="policyTypeEntry : ${policyTypes.entrySet}"
+								th:value="${policyTypeEntry.key}"
+								th:text="${policyTypeEntry.value}"
+								th:selected="${formParams.policyType}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="policySer">Серия полиса
+							(старого образца)</label> <input type="text"
+							th:field="*{formParams.policySer}" id="policySer"
+							class="form-select form-select-sm"
+							th:classappend="${#fields.hasErrors('formParams.policySer')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.policySer')}">Превышена
+							максимальная длина</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="policyNum">Номер полиса </label> <input
+							type="text" th:field="*{formParams.policyNum}" id="policyNum"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.policyNum')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.policyNum')}">Превышена
+							максимальная длина</div>
+					</div>
+				</div>
+			</div>
+			<div class="row small mb-1">
+				<div class="col-5">
+					<div class="form-group">
+						<label class="form-label m-0" for="dudlType">Тип ДУдЛ</label> <select
+							th:field="*{formParams.dudlType}"
+							class="form-select form-select-sm"
+							th:classappend="${#fields.hasErrors('formParams.dudlType')} ? 'is-invalid' : ''">
+							<option value=""></option>
+							<option th:each="dudlType : ${dudlTypes}"
+								th:value="${dudlType.docCode}" th:text="${dudlType.docName}"
+								th:selected="${formParams.dudlType}"></option>
+						</select>
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.dudlType')}">Не
+							выбран тип ДУдЛ</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="dudlSer">Серия ДУдЛ</label> <input
+							type="text" th:field="*{formParams.dudlSer}" id="dudlSer"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.dudlSer')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.dudlSer')}">Превышена
+							максимальная длина</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="dudlNum">Номер ДУдЛ</label> <input
+							type="text" th:field="*{formParams.dudlNum}" id="dudlNum"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.dudlNum')} ? 'is-invalid' : ''" />
+					</div>
+				</div>
+			</div>
+			<div class="row small mb-1">
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="lastName">Фамилия</label> <input
+							type="text" th:field="*{formParams.lastName}" id="lastName"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.lastName')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.lastName')}">Поле не
+							может быть пустым, макс. 40 символов</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="firstName">Имя</label> <input
+							type="text" th:field="*{formParams.firstName}" id="firstName"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.firstName')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.firstName')}">Поле
+							не может быть пустым, макс. 40 символов</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="patronymic">Отчество</label> <input
+							type="text" th:field="*{formParams.patronymic}" id="patronymic"
+							class="form-control form-control-sm"/>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="snils">СНИЛС</label> <input
+							type="text" th:field="*{formParams.snils}" id="snils"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.snils')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.snils')}">Превышена
+							максимальная длина</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="birthDay">Дата рождения</label> <input
+							type="date" th:field="*{formParams.birthDay}" id="birthDay"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.birthDay')} ? 'is-invalid' : ''" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.birthDay')}">Не
+							корректная дата</div>
+					</div>
+				</div>
+			</div>
+			<div class="row small mb-3">
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="lastName">Тип поиска</label> <select
+							class="form-select form-select-sm"
+							th:onchange="|changeAccess(this.value)|"
+							th:field="*{formParams.historical}">
+							<option value="0">Актуально на дату</option>
+							<option value="1">Искать в истории</option>
+						</select>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="lastName">Актуально на дату</label>
+						<input type="date" th:field="*{formParams.dt}" id="dt"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.dt')} ? 'is-invalid' : ''"
+							th:disabled="${formParams.historical}" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.dt')}">Не корректная
+							дата</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="lastName">Начало периода
+							истории</label> <input type="date" th:field="*{formParams.dtFrom}"
+							id="dtFrom" class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.dtFrom')} ? 'is-invalid' : ''"
+							th:disabled="${!formParams.historical}" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.dtFrom')}">Не
+							корректная дата</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+						<label class="form-label m-0" for="lastName">Конец периода
+							истории</label><input type="date" th:field="*{formParams.dtTo}" id="dtTo"
+							class="form-control form-control-sm"
+							th:classappend="${#fields.hasErrors('formParams.dtTo')} ? 'is-invalid' : ''"
+							th:disabled="${!formParams.historical}" />
+						<div class="invalid-feedback"
+							th:if="${#fields.hasErrors('formParams.dtTo')}">Не
+							корректная дата</div>
+					</div>
+				</div>
+			</div>
+			<div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('formParams')}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+					class="bi bi-exclamation-triangle-fill text-danger" viewBox="0 0 16 16">
+					<path
+						d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+				</svg>&nbsp;&nbsp;
+				<span th:errors="*{formParams}"></span>
+			</div>
+			<div class="row">
+				<div class="col">
+					<input type="submit" value="Поиск" class="btn btn-sm btn-primary"
+						name="saveRequest"/>&nbsp;<input type="button" value="Очистить"
+						onclick="location.href='/policy?clear'" class="btn btn-sm btn-secondary" />&nbsp;<input
+						type="button" value="Обновить"
+						th:onclick="|goToPage(${dataPage != null ? dataPage.number + 1 : 1})|"
+						class="btn btn-sm btn-secondary" />&nbsp;<input type="button"
+						value="В Excel" th:onclick="|toExcel()|"
+						class="btn btn-sm btn-secondary" /> <input type="hidden" id="page"
+						name="page" />
+					<div class="badge text-bg-info"
+						th:if="${dataPage.getContent().size() > 0 && dataPage.getContent().get(0).hasError == null}">Запрос
+						в ФЕРЗЛ отправлен. Дождитесь начала новой минуты, затем нажмите
+						кнопку "Обновить"</div>
+				</div>
+			</div>
+			<hr/>
+			<div th:if="${dataPage.content.size > 0}">
+				<table class="table table-hover table-sm">
+					<thead class="table-dark">
+						<tr class="small">
+							<th></th>
+							<th>Дата поиска</th>
+							<th>Номер полиса</th>
+							<th>Серия ДУдЛ</th>
+							<th>Номер ДУдЛ</th>
+							<th>СНИЛС</th>
+							<th>Дата рождения</th>
+							<th>Фамилия</th>
+							<th>Имя</th>
+							<th>Отчество</th>
+							<th>Актуально</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="persData, iStat : ${dataPage.content}"
+							class='clickable-row small'
+							th:classappend="|${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid) ? 'table-success' : ''} ${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && !requestStatusMap.get(persData.rid) ? 'table-warning' : ''} ${persData.hasError != null && persData.hasError ? 'table-danger' : ''}|">
+							<td><input class="form-check-input" type="checkbox"
+								th:id="'ch'+${persData.rid}" th:value="${persData.rid}"
+								th:checked="${formParams.selectedRows != null && formParams.selectedRows.contains(persData.rid)}"
+								name="selectedRows"
+								th:if="${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid)}" /></td>
+							<td	class="btn-link" style="cursor: pointer;"
+								th:attr="data-rid=${persData.rid}, data-done=${persData.hasError != null}"
+								onclick="goToResult(this.getAttribute('data-rid'), this.getAttribute('data-done'))"
+								th:text="${#temporals.format(persData.dtIns, 'dd.MM.yyyy HH:mm:ss')}" />
+							<td th:text="${persData.pcy}" />
+							<td th:text="${persData.dudlSer}" />
+							<td th:text="${persData.dudlNum}" />
+							<td th:text="${persData.snils}" />
+							<td th:text="${#temporals.format(persData.birthDay, 'dd.MM.yyyy')}" />
+							<td th:text="${persData.lastName}" />
+							<td th:text="${persData.firstName}" />
+							<td th:text="${persData.patronymic}" />
+							<td
+								th:text="${persData.dtFrom != null ? 'c ' + #temporals.format(persData.dtFrom, 'dd.MM.yyyy') : ''} + ${persData.dtTo != null ? ' по ' + #temporals.format(persData.dtTo, 'dd.MM.yyyy') : ''} + ${persData.dt != null ? 'на ' + #temporals.format(persData.dt, 'dd.MM.yyyy') : persData.dtFrom == null && persData.dtTo == null ? persData.historical != null ? 'вся история' : 'на ' + #temporals.format(persData.dtIns, 'dd.MM.yyyy') : ''}" />
+						</tr>
+					</tbody>
+				</table>
+				<nav aria-label="Pagination" th:if="${dataPage.totalPages gt 0}">
+					<ul
+						class="pagination pagination-sm justify-content-start font-weight-medium">
+						<li><small>Фильтр по дате поиска</small>&nbsp;</li>
+						<li><input type="date" th:field="*{formParams.dateFrom}"
+							class="form-control form-control-sm" id="dateFrom" /></li>
+						<li>&nbsp;-&nbsp;</li>
+						<li><input type="date" th:field="*{formParams.dateTo}"
+							class="form-control form-control-sm" id="dateTo" /></li>
+						<li>&nbsp;<input type="button"
+						value="Применить"
+						th:onclick="|goToPage(${dataPage.number + 1})|"
+						class="btn btn-sm btn-secondary" /></li>
+						<li class="page-item"
+							th:classappend="${dataPage.number eq 0} ? 'disabled'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number eq 0} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number lt 2 ? 1 : dataPage.number})|">
+								<p>&#60;&#60;
+								<p>
+							</button>
+						</li>
+						<li class="page-item"
+							th:classappend="${i eq dataPage.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence(dataPage.totalPages > dataPage.number + 10 ? dataPage.number + 1 : dataPage.totalPages - 10 > 0 ? dataPage.totalPages - 10 : 1, dataPage.totalPages > 10 + dataPage.number ? dataPage.number + 10 : dataPage.totalPages, 1)}">
+							<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
+							th:text="${i}"><span class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item disabled"
+							th:if="${dataPage.number + 10 < dataPage.totalPages}"><a
+							class="page-link" href="#"> ... </a></li>
+						<li class="page-item"
+							th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${dataPage.number + 1 eq dataPage.totalPages} ? 'disabled'"
+								th:onclick="|goToPage(${dataPage.number + 2})|">
+								<p>&#62;&#62;
+								<p>
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start"
+		th:fragment="footer" th:insert="copyright">
+	</footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+	<script th:inline="javascript">
+		document.getElementById("searchForm").onkeypress = function(e) {
+			var key = e.charCode || e.keyCode || 0;
+			if (key == 13) {
+				e.preventDefault();
+			}
+		}
+		function goToPage(page) {
+			document.getElementById("searchForm").page.value = page;
+			document.getElementById("searchForm").submit();
+		}
+		function goToResult(rid, done) {
+			if (done == "true") {
+				form = document.getElementById("searchForm");
+				form.rid.value = rid;
+				form.action = "/policy/res";
+				form.submit();
+				form.action = "/policy";
+			}
+		}
+		function changeAccess(historical) {
+			form = document.getElementById("searchForm");
+			if (historical == 1) {
+				form.dt.setAttribute("disabled", "disabled");
+				form.dt.value = "";
+				form.dtFrom.removeAttribute("disabled");
+				form.dtTo.removeAttribute("disabled");
+			} else {
+				form.dt.removeAttribute("disabled");
+				form.dtFrom.setAttribute("disabled", "disabled");
+				form.dtFrom.value = "";
+				form.dtTo.setAttribute("disabled", "disabled");
+				form.dtTo.value = "";
+			}
+		}
+		function toExcel() {
+			form = document.getElementById("searchForm");	
+			form.action = "/policy/excel";
+			var flag = false;
+			for (let checkbox of form.selectedRows) {
+				if(checkbox.checked) {
+					flag = true;
+				}
+			}
+			if (flag) {
+				form.submit();
+			} else alert ("Не выбраны строки для отчета в Excel");
+			form.action = "/policy";
+		}
+	</script>
+</body>
+</html>

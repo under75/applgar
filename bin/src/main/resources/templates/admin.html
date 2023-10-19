@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title th:text="${@environment.getProperty('app.name')} + ' - Страница администрирования'"></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+</head>
+
+<body style="overflow-y:scroll;">
+	<header class="fixed-top" th:insert="menu :: navbar"></header>
+	<br /><br /><br />
+	<div class="container">
+		<ul class="nav nav-tabs">
+			<li class="nav-item"><a class="nav-link active"
+				aria-current="page" href="#">Текущие авторизованные пользователи - <span th:text="${users.size}"></span></a></li>
+			<li class="nav-item"><a class="nav-link" href="/admin/info">Установка оповещения</a></li>
+		</ul>
+		<br/>
+		<table class="table table-sm table-hover">
+			<thead class="table-secondary">
+				<tr class="small">
+					<th>Id</th>
+					<th>Вошел</th>
+					<th>Фамилия</th>
+					<th>Имя</th>
+					<th>Отчество</th>
+					<th>Код страховой</th>
+					<th>Код филиала</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user, iStat : ${users}" class='small' th:classappend="${user.id eq 'admin' ? 'table-primary' : ''}">
+					<td align="left" th:text="${user.id}" />
+					<td align="left" th:text="${#temporals.format(user.effDate, 'dd.MM.yyyy HH:mm:ss')}" />
+					<td align="left" th:text="${user.lastname}" />
+					<td align="left" th:text="${user.firstname}" />
+					<td align="left" th:text="${user.patronymic}" />
+					<td align="left" th:text="${user.smo}" />
+					<td align="left" th:text="${user.fSmo}" />
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<footer class="text-center text-lg-start" th:fragment="footer" th:insert="copyright">
+	</footer>
+	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>
