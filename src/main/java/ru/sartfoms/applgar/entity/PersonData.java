@@ -90,6 +90,9 @@ public class PersonData {
 	
 	@Column(name = "oip_resp")
 	private String oipRes;
+	
+	@Column(name = "owner")
+	private Integer owner;
 
 	public PersonData() {
 	}
@@ -271,6 +274,14 @@ public class PersonData {
 
 	public void setDtIns(LocalDateTime dtIns) {
 		this.dtIns = dtIns;
+	}
+
+	public Integer getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Integer owner) {
+		this.owner = owner;
 	}
 
 }

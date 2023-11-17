@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ru.sartfoms</groupId>
 	<artifactId>applgar</artifactId>
-	<version>3.2.3</version>
+	<version>4.1</version>
 	<name>applgar</name>
 	<description>Software for entering addresses from GAR</description>
 	<properties>

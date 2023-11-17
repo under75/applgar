@@ -11,12 +11,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "MPI_GET_MERGE_ANCESSOR_OIP", schema = "ASY23")
+@Table(name = "MPI_GET_MERGE_ANCESSOR_OIP", schema = "OMCOWNER")
 public class MergeAncessorOip {
 	@Id
 	@Column(name = "rid")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_sequence")
-	@SequenceGenerator(name = "id_sequence", sequenceName = "ASY23.MPI_SEQ", allocationSize = 1)
+	@SequenceGenerator(name = "id_sequence", sequenceName = "OMCOWNER.MPI_SEQ", allocationSize = 1)
 	private Long rid;
 
 	@Column(name = "usr")

@@ -47,7 +47,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 				.successHandler(myAuthenticationSuccessHandler());
 		http.authorizeRequests().antMatchers("/resources/**", "/static/**", "/webjars/**", "/help/**").permitAll()
 				.antMatchers("/appl/**").hasAuthority("smo").antMatchers("/policy/**", "/ancessor/**")
-				.hasAnyAuthority("smo", "tfoms", "admin").antMatchers("/admin/**").hasAuthority("admin").anyRequest().authenticated()
+				.hasAnyAuthority("smo", "admin").antMatchers("/admin/**").hasAuthority("admin").anyRequest().authenticated()
 				.and().formLogin().permitAll().and().logout().permitAll().and().exceptionHandling()
 				.accessDeniedPage("/403");
 		return http.build();

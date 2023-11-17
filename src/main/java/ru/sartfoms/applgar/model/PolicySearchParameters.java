@@ -20,7 +20,7 @@ public class PolicySearchParameters {
 	private String snils;
 	@NotEmpty
 	private String birthDay;
-	@Size(min=3,max=40)
+	@Size(min=2,max=40)
 	private String lastName;
 	@Size(min=2,max=40)
 	private String firstName;
