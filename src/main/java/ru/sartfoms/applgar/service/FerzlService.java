@@ -172,7 +172,7 @@ public class FerzlService {
 		}
 	}
 
-	public void saveRequest(PolicySearchParameters searchParams, String userName) throws ParseException {
+	public PersonData saveRequest(PolicySearchParameters searchParams, String userName) throws ParseException {
 		PersonData personData = new PersonData();
 		personData.setPcyType(searchParams.getPolicyType());
 		personData.setPcySer(searchParams.getPolicySer().trim());
@@ -194,12 +194,13 @@ public class FerzlService {
 		personData.setUser(userName);
 		personData.setShow(Show.Person + " " + Show.OmsPolicy);
 		personData.setDtIns(LocalDateTime.now());
-		personData.setOwner(OWNER);
+		personData.setOwner(OWNER_REST);
 
 		personData = personDataRepository.save(personData);
 		personDataDAO.save(personData.getRid(), searchParams.getLastName().trim(), searchParams.getFirstName().trim(),
 				searchParams.getPatronymic().trim(), LocalDate.parse(searchParams.getBirthDay()));
-
+		
+		return personData;
 	}
 
 	public Page<PersonData> getPersDataPage(PolicySearchParameters searchParams, String userName,
@@ -330,5 +331,9 @@ public class FerzlService {
 		entity.setUser(userName);
 
 		mergeAncessorOipRepository.save(entity);
+	}
+
+	public PersonData save(PersonData personData) {
+		return personDataRepository.save(personData);
 	}
 }

@@ -2,6 +2,7 @@ package ru.sartfoms.applgar.controller;
 
 import static ru.sartfoms.applgar.service.FerzlService.policyType;
 import static ru.sartfoms.applgar.service.FerzlService.resultType;
+import static ru.sartfoms.applgar.util.Constants.OWNER_CRON;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import ru.sartfoms.applgar.entity.MPIError;
 import ru.sartfoms.applgar.entity.MergeAncessorOip;
@@ -42,13 +45,16 @@ import ru.sartfoms.applgar.util.Info;
 @Controller
 public class FerzlController {
 	private final FerzlService ferzlService;
+	private final WebClient client;
 	@Autowired
 	SmartValidator validator;
 	@Autowired
 	Info info;
 
-	public FerzlController(FerzlService ferzlService) {
+	public FerzlController(FerzlService ferzlService, @Value("${verzl.server.url}") String verzlServerUrl,
+			@Value("${verzl.server.port}") int verzlServerPort) {
 		this.ferzlService = ferzlService;
+		this.client = WebClient.create("http://" + verzlServerUrl + ":" + verzlServerPort);
 	}
 
 	@ModelAttribute
@@ -102,7 +108,12 @@ public class FerzlController {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (!bindingResult.hasErrors() && !page.isPresent()) {
-			ferzlService.saveRequest(searchParams, userName);
+			PersonData personData = ferzlService.saveRequest(searchParams, userName);
+			client.get().uri("/persdata/" + personData.getRid()).retrieve().bodyToMono(Void.class)
+					.doOnError(throwable -> {
+						personData.setOwner(OWNER_CRON);
+						ferzlService.save(personData);
+					}).subscribe();
 		}
 
 		Page<PersonData> dataPage = ferzlService.getPersDataPage(searchParams, userName, page);

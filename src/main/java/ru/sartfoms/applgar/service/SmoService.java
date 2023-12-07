@@ -6,8 +6,6 @@ import static ru.sartfoms.applgar.util.Constants.SMO_ADD_CODE;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Service;
 
 import ru.sartfoms.applgar.entity.Fsmo;
