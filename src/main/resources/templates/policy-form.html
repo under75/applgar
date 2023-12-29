@@ -1,22 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title th:text="${@environment.getProperty('app.name')} + ' - Поиск информации о полисах в ФЕРЗЛ'"></title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Поиск информации о полисах в ФЕРЗЛ'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}" />
 </head>
 
-<body style="overflow-y:scroll;">
+<body style="overflow-y: scroll;">
 	<header class="fixed-top" th:insert="menu :: navbar"></header>
-	<br /><br /><br />
+	<br />
+	<br />
+	<br />
 	<div class="container">
-	<div th:if="${info.message != null && !info.message.isEmpty()}" th:insert="info"></div>
+		<div th:if="${info.message != null && !info.message.isEmpty()}"
+			th:insert="info"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item active" aria-current="page">Поиск информации о полисах в ФЕРЗЛ</li>
+				<li class="breadcrumb-item active" aria-current="page">Поиск
+					информации о полисах в ФЕРЗЛ</li>
 			</ol>
 		</nav>
 		<form th:method="POST" th:action="@{/policy}" id="searchForm">
@@ -49,9 +56,9 @@
 				</div>
 				<div class="col">
 					<div class="form-group">
-						<label class="form-label m-0" for="policyNum">Номер полиса </label> <input
-							type="text" th:field="*{formParams.policyNum}" id="policyNum"
-							class="form-control form-control-sm"
+						<label class="form-label m-0" for="policyNum">Номер полиса
+						</label> <input type="text" th:field="*{formParams.policyNum}"
+							id="policyNum" class="form-control form-control-sm"
 							th:classappend="${#fields.hasErrors('formParams.policyNum')} ? 'is-invalid' : ''" />
 						<div class="invalid-feedback"
 							th:if="${#fields.hasErrors('formParams.policyNum')}">Превышена
@@ -123,7 +130,7 @@
 					<div class="form-group">
 						<label class="form-label m-0" for="patronymic">Отчество</label> <input
 							type="text" th:field="*{formParams.patronymic}" id="patronymic"
-							class="form-control form-control-sm"/>
+							class="form-control form-control-sm" />
 					</div>
 				</div>
 				<div class="col">
@@ -139,8 +146,8 @@
 				</div>
 				<div class="col">
 					<div class="form-group">
-						<label class="form-label m-0" for="birthDay">Дата рождения</label> <input
-							type="date" th:field="*{formParams.birthDay}" id="birthDay"
+						<label class="form-label m-0" for="birthDay">Дата рождения</label>
+						<input type="date" th:field="*{formParams.birthDay}" id="birthDay"
 							class="form-control form-control-sm"
 							th:classappend="${#fields.hasErrors('formParams.birthDay')} ? 'is-invalid' : ''" />
 						<div class="invalid-feedback"
@@ -163,8 +170,8 @@
 				</div>
 				<div class="col">
 					<div class="form-group">
-						<label class="form-label m-0" for="lastName">Актуально на дату</label>
-						<input type="date" th:field="*{formParams.dt}" id="dt"
+						<label class="form-label m-0" for="lastName">Актуально на
+							дату</label> <input type="date" th:field="*{formParams.dt}" id="dt"
 							class="form-control form-control-sm"
 							th:classappend="${#fields.hasErrors('formParams.dt')} ? 'is-invalid' : ''"
 							th:disabled="${formParams.historical}" />
@@ -175,9 +182,10 @@
 				</div>
 				<div class="col">
 					<div class="form-group">
-						<label class="form-label m-0" for="lastName">Начало периода
-							истории</label> <input type="date" th:field="*{formParams.dtFrom}"
-							id="dtFrom" class="form-control form-control-sm"
+						<label class="form-label m-0" for="lastName">Начало
+							периода истории</label> <input type="date"
+							th:field="*{formParams.dtFrom}" id="dtFrom"
+							class="form-control form-control-sm"
 							th:classappend="${#fields.hasErrors('formParams.dtFrom')} ? 'is-invalid' : ''"
 							th:disabled="${!formParams.historical}" />
 						<div class="invalid-feedback"
@@ -198,31 +206,35 @@
 					</div>
 				</div>
 			</div>
-			<div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('formParams')}">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-					class="bi bi-exclamation-triangle-fill text-danger" viewBox="0 0 16 16">
+			<div class="alert alert-danger d-flex align-items-center"
+				role="alert" th:if="${#fields.hasErrors('formParams')}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+					fill="currentColor"
+					class="bi bi-exclamation-triangle-fill text-danger"
+					viewBox="0 0 16 16">
 					<path
 						d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-				</svg>&nbsp;&nbsp;
-				<span th:errors="*{formParams}"></span>
+				</svg>
+				&nbsp;&nbsp; <span th:errors="*{formParams}"></span>
 			</div>
 			<div class="row">
 				<div class="col">
 					<input type="submit" value="Поиск" class="btn btn-sm btn-primary"
-						name="saveRequest"/>&nbsp;<input type="button" value="Очистить"
-						onclick="location.href='/policy?clear'" class="btn btn-sm btn-secondary" />&nbsp;<input
-						type="button" value="Обновить"
-						th:onclick="|goToPage(${dataPage != null ? dataPage.number + 1 : 1})|"
+						name="saveRequest" />&nbsp;<input type="button" value="Очистить"
+						onclick="location.href='/policy?clear'"
 						class="btn btn-sm btn-secondary" />&nbsp;<input type="button"
 						value="В Excel" th:onclick="|toExcel()|"
-						class="btn btn-sm btn-secondary" /> <input type="hidden" id="page"
-						name="page" />
-					<div class="badge text-bg-info"
-						th:if="${dataPage.getContent().size() > 0 && dataPage.getContent().get(0).hasError == null}">Запрос
-						в ФЕРЗЛ отправлен, нажмите кнопку "Обновить"</div>
+						class="btn btn-sm btn-secondary" /> <input type="hidden"
+						id="page" name="page" />
+					<div style="display: none;" id="spinner">
+						<div class="spinner-border spinner-border-sm" role="status">
+							<span class="visually-hidden">Waiting...</span>
+						</div>
+						<small>ожидание ответа от ФЕРЗЛ</small>
+					</div>
 				</div>
 			</div>
-			<hr/>
+			<hr />
 			<div th:if="${dataPage.content.size > 0}">
 				<table class="table table-hover table-sm">
 					<thead class="table-dark">
@@ -240,30 +252,8 @@
 							<th>Актуально</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr th:each="persData, iStat : ${dataPage.content}"
-							class='clickable-row small'
-							th:classappend="|${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid) ? 'table-success' : ''} ${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && !requestStatusMap.get(persData.rid) ? 'table-warning' : ''} ${persData.hasError != null && persData.hasError ? 'table-danger' : ''}|">
-							<td><input class="form-check-input" type="checkbox"
-								th:id="'ch'+${persData.rid}" th:value="${persData.rid}"
-								th:checked="${formParams.selectedRows != null && formParams.selectedRows.contains(persData.rid)}"
-								name="selectedRows"
-								th:if="${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid)}" /></td>
-							<td	class="btn-link" style="cursor: pointer;"
-								th:attr="data-rid=${persData.rid}, data-done=${persData.hasError != null}"
-								onclick="goToResult(this.getAttribute('data-rid'), this.getAttribute('data-done'))"
-								th:text="${#temporals.format(persData.dtIns, 'dd.MM.yyyy HH:mm:ss')}" />
-							<td th:text="${persData.pcy}" />
-							<td th:text="${persData.dudlSer}" />
-							<td th:text="${persData.dudlNum}" />
-							<td th:text="${persData.snils}" />
-							<td th:text="${#temporals.format(persData.birthDay, 'dd.MM.yyyy')}" />
-							<td th:text="${persData.lastName}" />
-							<td th:text="${persData.firstName}" />
-							<td th:text="${persData.patronymic}" />
-							<td
-								th:text="${persData.dtFrom != null ? 'c ' + #temporals.format(persData.dtFrom, 'dd.MM.yyyy') : ''} + ${persData.dtTo != null ? ' по ' + #temporals.format(persData.dtTo, 'dd.MM.yyyy') : ''} + ${persData.dt != null ? 'на ' + #temporals.format(persData.dt, 'dd.MM.yyyy') : persData.dtFrom == null && persData.dtTo == null ? persData.historical != null ? 'вся история' : 'на ' + #temporals.format(persData.dtIns, 'dd.MM.yyyy') : ''}" />
-						</tr>
+					<tbody id="persdata">
+						<th:block th:insert="fragments/dpcontent.html"></th:block>
 					</tbody>
 				</table>
 				<nav aria-label="Pagination" th:if="${dataPage.totalPages gt 0}">
@@ -275,10 +265,9 @@
 						<li>&nbsp;-&nbsp;</li>
 						<li><input type="date" th:field="*{formParams.dateTo}"
 							class="form-control form-control-sm" id="dateTo" /></li>
-						<li>&nbsp;<input type="button"
-						value="Применить"
-						th:onclick="|goToPage(${dataPage.number + 1})|"
-						class="btn btn-sm btn-secondary" /></li>
+						<li>&nbsp;<input type="button" value="Применить"
+							th:onclick="|goToPage(${dataPage.number + 1})|"
+							class="btn btn-sm btn-secondary" /></li>
 						<li class="page-item"
 							th:classappend="${dataPage.number eq 0} ? 'disabled'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<button type="button" class="btn btn-sm btn-link"
@@ -311,9 +300,8 @@
 			</div>
 		</form>
 	</div>
-	<footer class="text-center text-lg-start"
-		th:fragment="footer" th:insert="copyright">
-	</footer>
+	<footer class="text-center text-lg-start" th:fragment="footer"
+		th:insert="copyright"> </footer>
 	<script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
 	<script th:inline="javascript">
 		document.getElementById("searchForm").onkeypress = function(e) {
@@ -363,6 +351,29 @@
 				form.submit();
 			} else alert ("Не выбраны строки для отчета в Excel");
 			form.action = "/policy";
+		}
+		window.onload = () => {
+			if (document.getElementById("success") != null && document.getElementById("success").getAttribute("data-success") == "false") {
+				document.getElementById('spinner').style.display = 'inline-block';
+				timerId = setInterval(function () {
+					requestData();
+				}, 1500);
+			}
+		}
+		const xhttp = new XMLHttpRequest();
+		function requestData() {
+			let form_data = new FormData(document.querySelector("#searchForm"));
+			let form_str = new URLSearchParams(form_data).toString();
+			xhttp.onload = function () {
+				 document.getElementById("persdata").innerHTML =
+				      this.responseText;
+				 if(document.getElementById("success").getAttribute("data-success") == "true") {
+				 	clearTimeout(timerId);
+				 	document.getElementById('spinner').style.display = 'none';
+				 }
+			}
+			xhttp.open("GET", "/persdata/data?" + form_str);
+			xhttp.send();
 		}
 	</script>
 </body>

@@ -81,6 +81,11 @@ public class FerzlController {
 			Optional<Integer> page = Optional.of(1);
 			dataPage = ferzlService.getPersDataPage(searchParams, userName, page);
 		}
+		if (dataPage.getContent().stream().anyMatch(t -> t.getHasError() == null)) {
+			model.addAttribute("success", false);
+		} else {
+			model.addAttribute("success", true);
+		}
 		Map<Long, Boolean> requestStatusMap = ferzlService.getRequestStatusAsMap(dataPage);
 
 		model.addAttribute("dataPage", dataPage);
@@ -117,6 +122,11 @@ public class FerzlController {
 		}
 
 		Page<PersonData> dataPage = ferzlService.getPersDataPage(searchParams, userName, page);
+		if (dataPage.getContent().stream().anyMatch(t -> t.getHasError() == null)) {
+			model.addAttribute("success", false);
+		} else {
+			model.addAttribute("success", true);
+		}
 		Map<Long, Boolean> requestStatusMap = ferzlService.getRequestStatusAsMap(dataPage);
 
 		model.addAttribute("dataPage", dataPage);
@@ -126,6 +136,26 @@ public class FerzlController {
 		session.setAttribute("policySParam", searchParams);
 
 		return "policy-form";
+	}
+	
+	@GetMapping("/persdata/data")
+	public String getContent(Model model, @ModelAttribute("formParams") PolicySearchParameters searchParams,  HttpSession session) throws ParseException {
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		@SuppressWarnings("unchecked")
+		int page = session.getAttribute("policyPage") != null ? ((Page<PersonData>)session.getAttribute("policyPage")).getNumber() + 1 : 1;
+		Page<PersonData> dataPage = ferzlService.getPersDataPage(searchParams, userName,  Optional.of(page));
+		if (dataPage.getContent().stream().anyMatch(t -> t.getHasError() == null)) {
+			model.addAttribute("success", false);
+		} else {
+			model.addAttribute("success", true);
+		}
+		Map<Long, Boolean> requestStatusMap = ferzlService.getRequestStatusAsMap(dataPage);
+		model.addAttribute("dataPage", dataPage);
+		model.addAttribute("requestStatusMap", requestStatusMap);
+		
+		session.setAttribute("policyPage", dataPage);
+
+		return "fragments/dpcontent";
 	}
 
 	@PostMapping("/policy/res")

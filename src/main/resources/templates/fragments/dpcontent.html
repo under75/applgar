@@ -1,0 +1,25 @@
+<tr th:each="persData, iStat : ${dataPage.content}"
+	class='clickable-row small'
+	th:classappend="|${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid) ? 'table-success' : ''} ${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && !requestStatusMap.get(persData.rid) ? 'table-warning' : ''} ${persData.hasError != null && persData.hasError ? 'table-danger' : ''}|">
+	<td><input class="form-check-input" type="checkbox"
+		th:id="'ch'+${persData.rid}" th:value="${persData.rid}"
+		th:checked="${formParams.selectedRows != null && formParams.selectedRows.contains(persData.rid)}"
+		name="selectedRows"
+		th:if="${persData.hasError != null && !persData.hasError && requestStatusMap.get(persData.rid) != null && requestStatusMap.get(persData.rid)}" /><input
+		type="hidden" th:if="${iStat.first}" id="success"
+		th:attr="data-success=${success}" /></td>
+	<td class="btn-link" style="cursor: pointer;"
+		th:attr="data-rid=${persData.rid}, data-done=${persData.hasError != null}"
+		onclick="goToResult(this.getAttribute('data-rid'), this.getAttribute('data-done'))"
+		th:text="${#temporals.format(persData.dtIns, 'dd.MM.yyyy HH:mm:ss')}" />
+	<td th:text="${persData.pcy}" />
+	<td th:text="${persData.dudlSer}" />
+	<td th:text="${persData.dudlNum}" />
+	<td th:text="${persData.snils}" />
+	<td th:text="${#temporals.format(persData.birthDay, 'dd.MM.yyyy')}" />
+	<td th:text="${persData.lastName}" />
+	<td th:text="${persData.firstName}" />
+	<td th:text="${persData.patronymic}" />
+	<td
+		th:text="${persData.dtFrom != null ? 'c ' + #temporals.format(persData.dtFrom, 'dd.MM.yyyy') : ''} + ${persData.dtTo != null ? ' по ' + #temporals.format(persData.dtTo, 'dd.MM.yyyy') : ''} + ${persData.dt != null ? 'на ' + #temporals.format(persData.dt, 'dd.MM.yyyy') : persData.dtFrom == null && persData.dtTo == null ? persData.historical != null ? 'вся история' : 'на ' + #temporals.format(persData.dtIns, 'dd.MM.yyyy') : ''}" />
+</tr>
